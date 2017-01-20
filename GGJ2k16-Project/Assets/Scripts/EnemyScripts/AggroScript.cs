@@ -38,10 +38,10 @@ public class AggroScript : MonoBehaviour {
         }
         if (m_aggroed)
         {
-            Vector3 newPos = transform.position;
-            Vector3 dir = Vector3.Normalize(m_aggroTarget.position - newPos);
-            Debug.Log(dir);
-            newPos += dir * m_speed * Time.deltaTime;
+            //Vector3 newPos = transform.position;
+            //Vector3 dir = Vector3.Normalize(m_aggroTarget.position - newPos);
+            //Debug.Log(dir);
+            //newPos += dir * m_speed * Time.deltaTime;
             /*if (dir.x > 0)
             {
                 m_animator.SetTrigger("MOVE_RIGHT");
@@ -50,7 +50,10 @@ public class AggroScript : MonoBehaviour {
             {
                 m_animator.SetTrigger("MOVE_LEFT");
             }*/
-            transform.position = newPos;
+            //transform.position = newPos;
+
+            transform.position = Vector2.MoveTowards(transform.position, m_aggroTarget.position, m_speed * Time.deltaTime);
+            
         }
 	}
 
