@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float               m_moveSpeed;
-    private STATE               m_prevState;
+    private STATE               m_prevState;        
     private Rigidbody2D         m_rBody;
     [SerializeField]
     private CircleCollider2D    m_waveTrigger;
@@ -20,7 +20,6 @@ public class Player : MonoBehaviour
     private Animator            m_animator;
     [SerializeField]
     private float               m_animationSpeed;
-
 
     void Awake()
     {
@@ -34,7 +33,7 @@ public class Player : MonoBehaviour
         m_prevState = STATE.NO_STATE;
         m_curState = STATE.DEFAULT;
 
-
+        
         m_animator.SetFloat("SPEED", m_animationSpeed);
         m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
 	}
@@ -105,6 +104,7 @@ public class Player : MonoBehaviour
     
         //@Waving input
         //
+        if(Input.GetButton("Jump"))
         {
             m_curState = STATE.WAVING;
         }
@@ -132,5 +132,10 @@ public class Player : MonoBehaviour
     void WavingEnd()
     {
         m_waveTrigger.enabled = true;
+    }
+
+    public bool IsWaving()
+    {
+        return m_curState == STATE.WAVING;
     }
 }

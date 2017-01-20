@@ -7,39 +7,49 @@ public class AggroScript : MonoBehaviour {
     public float m_speed = 10.0f;
 
     [SerializeField] private bool m_aggroed;
+    [SerializeField] private Animator m_animator;
     private Transform m_aggroTarget;
-    //private List<WaveScript> m_players;
+    private List<Player> m_players;
 
 	// Use this for initialization
 	void Start () {
         m_aggroed = false;
+        m_players = new List<Player>();
         GameObject[] players = GameObject.FindGameObjectsWithTag(m_aggroTargetTag);
         foreach(GameObject player in players)
         {
-            /*WaveScript ws = player.GetComponent<WaveScript>();
+            Player ws = player.GetComponent<Player>();
             if(ws)
             {
                 m_players.Add(ws);
-            }*/
+            }
         }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        /*foreach(WaveScript player in m_players)
+        foreach(Player player in m_players)
         {
             if(player.IsWaving())
             {
                 m_aggroed = true;
                 m_aggroTarget = player.gameObject.transform;
             }
-        }*/
-        if(m_aggroed)
+        }
+        if (m_aggroed)
         {
             Vector3 newPos = transform.position;
             Vector3 dir = Vector3.Normalize(m_aggroTarget.position - newPos);
             Debug.Log(dir);
             newPos += dir * m_speed * Time.deltaTime;
+            /*if (dir.x > 0)
+            {
+                m_animator.SetTrigger("MOVE_RIGHT");
+            }
+            else
+            {
+                m_animator.SetTrigger("MOVE_LEFT");
+            }*/
             transform.position = newPos;
         }
 	}
