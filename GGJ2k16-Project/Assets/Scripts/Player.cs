@@ -7,7 +7,9 @@ public class Player : MonoBehaviour
     public int m_playerID;
     public enum STATE { DEFAULT, WAVING, NO_STATE };
     public STATE                m_curState;
-    
+
+    [SerializeField]
+    private float               m_moveSpeed;
     private STATE               m_prevState;
     private Rigidbody2D         m_rBody;
     [SerializeField]
@@ -22,15 +24,19 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-
+        //Component refs set up in inspector
 
     }
 
 	// Use this for initialization
 	void Start ()
     {
+        m_prevState = STATE.NO_STATE;
+        m_curState = STATE.DEFAULT;
+
 
         m_animator.SetFloat("SPEED", m_animationSpeed);
+        m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
 	}
 	
 	// Update is called once per frame
@@ -68,17 +74,36 @@ public class Player : MonoBehaviour
     void MovingUpdate()
     {
         //some intput
-        //apply some motion
-        //LEFT
-        {
-            m_animator.SetTrigger("MOVE_LEFT");
-        }
-        //RIGHT
-        {
-            m_animator.SetTrigger("MOVE_RIGHT");
-        }
+        //get axis input
+        Vector2 velocity = Vector2.zero; //= input axis() @Axis input
+        //if input is not large enough (IE in dead zone, set velocity to vector2.zero)
+        velocity *= m_moveSpeed;
 
-        //wave
+        //Moving sideways
+        if (velocity.x > velocity.y)
+        {
+            if (velocity.x >= 0)
+            {
+                m_animator.SetTrigger("MOVE_RIGHT");
+            }
+            else //if mostly moving UP
+            {
+                m_animator.SetTrigger("MOVE_LEFT");
+            }
+        }
+        else //if moving up/down
+        {
+            if (velocity.y >=0)
+            {
+                m_animator.SetTrigger("MOVE_UP");
+            }
+            else //if mostly DOWN
+            {
+                m_animator.SetTrigger("MOVE_DOWN");
+            }
+        }
+    
+        //@Waving input
         //
         {
             m_curState = STATE.WAVING;
@@ -98,7 +123,7 @@ public class Player : MonoBehaviour
 
     void WavingUpdate()
     {
-        //If waving input stopped
+        //If waving input stopped @ Waving input
         {
             m_curState = STATE.DEFAULT;
         }
