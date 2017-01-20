@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 
 public class Player : MonoBehaviour
@@ -13,13 +13,14 @@ public class Player : MonoBehaviour
     private STATE               m_prevState;        
     private Rigidbody2D         m_rBody;
     [SerializeField]
-    private CircleCollider2D    m_waveTrigger;
-    [SerializeField]
     private Collider2D          m_collider;
     [SerializeField]
     private Animator            m_animator;
     [SerializeField]
     private float               m_animationSpeed;
+
+    private Rigidbody2D         m_rb;
+    private List<GameObject>    m_interactables;
 
     void Awake()
     {
@@ -33,7 +34,9 @@ public class Player : MonoBehaviour
         m_prevState = STATE.NO_STATE;
         m_curState = STATE.DEFAULT;
 
-        
+        m_rb = GetComponent<Rigidbody2D>();
+        m_interactables = new List<GameObject>();
+
         m_animator.SetFloat("SPEED", m_animationSpeed);
         m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
 	}
@@ -74,40 +77,53 @@ public class Player : MonoBehaviour
     {
         //some intput
         //get axis input
-        Vector2 velocity = Vector2.zero; //= input axis() @Axis input
+        Vector2 velocity = new Vector2(Input.GetAxis("p" + m_playerID + "Horizontal"), Input.GetAxis("p" + m_playerID + "Vertical")); //= input axis() Axis input
         //if input is not large enough (IE in dead zone, set velocity to vector2.zero)
         velocity *= m_moveSpeed;
 
         //Moving sideways
-        if (velocity.x > velocity.y)
+        if (velocity != Vector2.zero)
         {
-            if (velocity.x >= 0)
+            if (velocity.x > velocity.y)
             {
-                m_animator.SetTrigger("MOVE_RIGHT");
+                if (velocity.x >= 0)
+                {
+                    m_animator.SetTrigger("MOVE_RIGHT");
+                }
+                else //if mostly moving UP
+                {
+                    m_animator.SetTrigger("MOVE_LEFT");
+                }
             }
-            else //if mostly moving UP
+            else //if moving up/down
             {
-                m_animator.SetTrigger("MOVE_LEFT");
+                if (velocity.y >= 0)
+                {
+                    m_animator.SetTrigger("MOVE_UP");
+                }
+                else //if mostly DOWN
+                {
+                    m_animator.SetTrigger("MOVE_DOWN");
+                }
             }
         }
-        else //if moving up/down
+
+        if (Input.GetButton("p" + m_playerID + "Action"))
         {
-            if (velocity.y >=0)
+            if (m_interactables.Count == 0)
             {
-                m_animator.SetTrigger("MOVE_UP");
+                m_curState = STATE.WAVING;
             }
-            else //if mostly DOWN
+            else
             {
-                m_animator.SetTrigger("MOVE_DOWN");
+                GameObject interactable = m_interactables[0];
+                //get interactable component and call interactable script to do a thing aight?
             }
         }
-    
-        //@Waving input
-        //
-        if(Input.GetButton("Jump"))
-        {
-            m_curState = STATE.WAVING;
-        }
+
+        Vector2 pos = m_rb.transform.position;
+        pos += velocity * Time.deltaTime;
+        m_rb.MovePosition(pos);
     }
 
     void MovingEnd()
@@ -117,13 +133,12 @@ public class Player : MonoBehaviour
 
     void WavingTransition()
     {
-        m_waveTrigger.enabled = true;
         m_animator.SetTrigger("WAVING");
     }
 
     void WavingUpdate()
     {
-        //If waving input stopped @ Waving input
+        if(Input.GetButtonUp("p" + m_playerID + "Action"))
         {
             m_curState = STATE.DEFAULT;
         }
@@ -131,7 +146,23 @@ public class Player : MonoBehaviour
 
     void WavingEnd()
     {
-        m_waveTrigger.enabled = true;
+
+    }
+
+    void OnTriggerEnter2D(Collider2D _col)
+    {
+        if(_col.tag == "Interactable")
+        {
+            m_interactables.Add(_col.gameObject);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D _col)
+    {
+        if (_col.tag == "Interactable")
+        {
+            m_interactables.Remove(_col.gameObject);
+        }
     }
 
     public bool IsWaving()

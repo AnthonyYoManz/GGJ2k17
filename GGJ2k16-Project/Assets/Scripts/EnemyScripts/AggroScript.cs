@@ -52,7 +52,7 @@ public class AggroScript : MonoBehaviour {
             }*/
             //transform.position = newPos;
 
-            transform.position = Vector2.MoveTowards(transform.position, m_aggroTarget.position, m_speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, m_aggroTarget.position, m_speed * Time.deltaTime);
             
         }
 	}
