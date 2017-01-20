@@ -13,13 +13,13 @@ public class Player : MonoBehaviour
     private STATE               m_prevState;        
     private Rigidbody2D         m_rBody;
     [SerializeField]
-    private CircleCollider2D    m_waveTrigger;
-    [SerializeField]
     private Collider2D          m_collider;
     [SerializeField]
     private Animator            m_animator;
     [SerializeField]
     private float               m_animationSpeed;
+
+    private Rigidbody2D m_rb;
 
     void Awake()
     {
@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
         m_prevState = STATE.NO_STATE;
         m_curState = STATE.DEFAULT;
 
+        m_rb = GetComponent<Rigidbody2D>();
         
         m_animator.SetFloat("SPEED", m_animationSpeed);
         m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
@@ -74,40 +75,45 @@ public class Player : MonoBehaviour
     {
         //some intput
         //get axis input
-        Vector2 velocity = Vector2.zero; //= input axis() @Axis input
+        Vector2 velocity = new Vector2(Input.GetAxis("p" + m_playerID + "Horizontal"), Input.GetAxis("p" + m_playerID + "Vertical")); //= input axis() Axis input
         //if input is not large enough (IE in dead zone, set velocity to vector2.zero)
         velocity *= m_moveSpeed;
 
         //Moving sideways
-        if (velocity.x > velocity.y)
+        if (velocity != Vector2.zero)
         {
-            if (velocity.x >= 0)
+            if (velocity.x > velocity.y)
             {
-                m_animator.SetTrigger("MOVE_RIGHT");
+                if (velocity.x >= 0)
+                {
+                    m_animator.SetTrigger("MOVE_RIGHT");
+                }
+                else //if mostly moving UP
+                {
+                    m_animator.SetTrigger("MOVE_LEFT");
+                }
             }
-            else //if mostly moving UP
+            else //if moving up/down
             {
-                m_animator.SetTrigger("MOVE_LEFT");
-            }
-        }
-        else //if moving up/down
-        {
-            if (velocity.y >=0)
-            {
-                m_animator.SetTrigger("MOVE_UP");
-            }
-            else //if mostly DOWN
-            {
-                m_animator.SetTrigger("MOVE_DOWN");
+                if (velocity.y >= 0)
+                {
+                    m_animator.SetTrigger("MOVE_UP");
+                }
+                else //if mostly DOWN
+                {
+                    m_animator.SetTrigger("MOVE_DOWN");
+                }
             }
         }
     
-        //@Waving input
-        //
-        if(Input.GetButton("Jump"))
+        if(Input.GetButton("p" + m_playerID + "Action"))
         {
             m_curState = STATE.WAVING;
         }
+
+        Vector2 pos = m_rb.transform.position;
+        pos += velocity * Time.deltaTime;
+        m_rb.MovePosition(pos);
     }
 
     void MovingEnd()
@@ -117,13 +123,12 @@ public class Player : MonoBehaviour
 
     void WavingTransition()
     {
-        m_waveTrigger.enabled = true;
         m_animator.SetTrigger("WAVING");
     }
 
     void WavingUpdate()
     {
-        //If waving input stopped @ Waving input
+        if(Input.GetButtonUp("p" + m_playerID + "Action"))
         {
             m_curState = STATE.DEFAULT;
         }
@@ -131,7 +136,7 @@ public class Player : MonoBehaviour
 
     void WavingEnd()
     {
-        m_waveTrigger.enabled = true;
+
     }
 
     public bool IsWaving()
