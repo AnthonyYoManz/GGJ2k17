@@ -5,9 +5,7 @@ using System.Collections;
 public class RoomScript : MonoBehaviour
 {
 
-    public Rect m_size { get; private set;}
-
-
+    
     public BoxCollider2D m_collider { get; private set; }
 
     //Don't know if we need any update stuff yet so leave it for now
