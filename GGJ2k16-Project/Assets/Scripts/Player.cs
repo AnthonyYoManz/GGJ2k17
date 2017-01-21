@@ -161,15 +161,35 @@ public class Player : MonoBehaviour
             }
         }
 
+        bool actionPressed = Input.GetButtonDown("p" + m_playerID + "Action");
+        GameObject interactable;
+
+        InteractableScript iscript;
+
         if (m_interactables.Count > 0)
         {
-            GameObject interactable = m_interactables[0];
+            interactable = m_interactables[0];
+            iscript = interactable.GetComponent<InteractableScript>();
             Vector3 intPos = interactable.transform.position;
             intPos.y += m_interactionIndicatorYOffset;
             m_interactionIndicator.transform.position = intPos;
-            if(!m_interactionIndicator.activeSelf)
+            if (iscript)
             {
-                m_interactionIndicator.SetActive(true);
+                if (iscript.IsInteractable())
+                {
+                    if (!m_interactionIndicator.activeSelf)
+                    {
+                        m_interactionIndicator.SetActive(true);
+                    }
+                    if (actionPressed)
+                    {
+                        iscript.Interact();
+                    }
+                }
+                if (!iscript.IsInteractable())
+                {
+                    m_interactables.Remove(iscript.gameObject);
+                }
             }
         }
         else
@@ -178,22 +198,9 @@ public class Player : MonoBehaviour
             {
                 m_interactionIndicator.SetActive(false);
             }
-        }
-
-            if (Input.GetButton("p" + m_playerID + "Action"))
-        {
-            if (m_interactables.Count == 0)
+            if(actionPressed)
             {
                 m_curState = STATE.WAVING;
-            }
-            else
-            {
-                GameObject interactable = m_interactables[0];
-                InteractableScript iscript = interactable.GetComponent<InteractableScript>();
-                if(iscript)
-                {
-                    iscript.Interact();
-                }
             }
         }
 
