@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
         {
             if (velocity != Vector2.zero)
             {
-                if (velocity.x > velocity.y)
+                if (Mathf.Abs(velocity.x) > Mathf.Abs(velocity.y))
                 {
                     if (velocity.x >= 0)
                     {

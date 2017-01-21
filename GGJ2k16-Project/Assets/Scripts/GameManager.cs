@@ -34,7 +34,10 @@ public class GameManager : MonoBehaviour
         {
             //if (p.m_curState == Player.STATE.DEAD)
             {
-
+                //if input == restart
+                {
+                    RestartLevel();
+                }
             }
         }
 
