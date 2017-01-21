@@ -4,12 +4,10 @@ using System.Collections.Generic;
 [RequireComponent(typeof(BoxCollider2D))]
 public class RoomScript : MonoBehaviour
 {
-<<<<<<< HEAD
+
     public GameObject m_explosionPrefab;
     private List<GameObject> m_roomEnemies;
-=======
-  
->>>>>>> cd9b83b127460f8c3a83a42f05d0b227220b63ee
+
     public BoxCollider2D m_collider { get; private set; }
 
     //Don't know if we need any update stuff yet so leave it for now
