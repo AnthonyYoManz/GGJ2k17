@@ -39,6 +39,12 @@ public class Player : MonoBehaviour
 
     public Transform m_otherTransform;
     public int m_minSortingLayer = 6;
+
+
+    public AudioClip m_waveSound;
+    public AudioClip m_deathSound;
+    private AudioSource m_audioSource;
+
     private Timer m_waveTimer;
     [SerializeField]
     private float m_minWaveDuration;
@@ -89,8 +95,8 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        //Component refs set up in inspector
-
+        //most Component refs set up in inspector
+        m_audioSource = GetComponent<AudioSource>();
     }
 
 	// Use this for initialization
@@ -296,6 +302,8 @@ public class Player : MonoBehaviour
             m_animator.SetTrigger("WAVE");
             m_curMoveState = ANIM_STATE.WAVING;
             m_waveTimer.Restart();
+
+            if (m_waveSound && m_audioSource) m_audioSource.PlayOneShot(m_waveSound);
         }
     }
 
@@ -354,6 +362,7 @@ public class Player : MonoBehaviour
             if (m_lives <= 0)
             {
                 m_curState = STATE.DEAD;
+                if (m_deathSound && m_audioSource) m_audioSource.PlayOneShot(m_deathSound);
                 FlameIRLPlayer();
                 m_sprRend.color = new Color(0, 0, 0, 0);
             }

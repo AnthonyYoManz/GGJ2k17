@@ -5,8 +5,9 @@ public class LeverScript : InteractableScript {
 
     public TriggerableScript m_triggerable; //make this do thing thx
     public Sprite m_activeSprite;
+    
+    protected bool m_interacted;
 
-    private bool m_interacted;
 
 	// Use this for initialization
 	void Start ()

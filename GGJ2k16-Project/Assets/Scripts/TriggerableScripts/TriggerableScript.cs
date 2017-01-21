@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class TriggerableScript : MonoBehaviour {
 
@@ -29,6 +30,14 @@ public class TriggerableScript : MonoBehaviour {
                 m_triggered = true;
                 OnTrigger();
             }
+        }
+    }
+
+    internal void UndoTrigger()
+    {
+        if (!m_triggered)
+        {
+            m_triggers++;
         }
     }
 
