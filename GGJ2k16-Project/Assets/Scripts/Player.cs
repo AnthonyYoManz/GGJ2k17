@@ -52,36 +52,37 @@ public class Player : MonoBehaviour
 
         return transform.position == target;
     }
-    //public void ForceAnimation(ANIM_STATE state)
-    //{ 
-    //    if (m_curMoveState != state)
-    //    {
-    //        //Wish i'd just mapped this KILL ME
-    //        switch (state)
-    //        {
-    //            case ANIM_STATE.IDLE: m_animator.SetTrigger("IDLE"); break;
-    //            case ANIM_STATE.DOWN: m_animator.SetTrigger("MOVE_DOWN"); break;
-    //            case ANIM_STATE.UP: m_animator.SetTrigger("MOVE_UP"); break;
-    //            case ANIM_STATE.LEFT: m_animator.SetTrigger("MOVE_LEFT"); break;
-    //            case ANIM_STATE.RIGHT: m_animator.SetTrigger("MOVE_RIGHT"); break;
-    //            case ANIM_STATE.WAVING: m_animator.SetTrigger("WAVE"); break;
-    //        }
-            
-    //        m_curMoveState = state;
-    //    }
-    //}
 
-    //public void ForceSetAnimSpeed(float speed)
-    //{
-    //    m_animator.SetFloat("SPEED", speed);
-    //}
+    public void ForceAnimation(ANIM_STATE state)
+    {
+        if (m_curMoveState != state)
+        {
+            //Wish i'd just mapped this KILL ME
+            switch (state)
+            {
+                case ANIM_STATE.IDLE: m_animator.SetTrigger("IDLE"); break;
+                case ANIM_STATE.DOWN: m_animator.SetTrigger("MOVE_DOWN"); break;
+                case ANIM_STATE.UP: m_animator.SetTrigger("MOVE_UP"); break;
+                case ANIM_STATE.LEFT: m_animator.SetTrigger("MOVE_LEFT"); break;
+                case ANIM_STATE.RIGHT: m_animator.SetTrigger("MOVE_RIGHT"); break;
+                case ANIM_STATE.WAVING: m_animator.SetTrigger("WAVE"); break;
+            }
 
-    //public void ForceSetDefaultAnimSpeed()
-    //{
-    //    m_animator.SetFloat("SPEED", m_animationSpeed);
-    //}
+            m_curMoveState = state;
+        }
+    }
 
-        void Awake()
+    public void ForceSetAnimSpeed(float speed)
+    {
+        m_animator.SetFloat("SPEED", speed);
+    }
+
+    public void ForceSetDefaultAnimSpeed()
+    {
+        m_animator.SetFloat("SPEED", m_animationSpeed);
+    }
+
+    void Awake()
     {
         //Component refs set up in inspector
 
@@ -221,7 +222,7 @@ public class Player : MonoBehaviour
             m_animator.SetFloat("SPEED", m_animationSpeed);
             if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
             {
-                if (direction.x >= 0 && m_curMoveState != ANIM_STATE.RIGHT)
+                if (direction.x > 0 && m_curMoveState != ANIM_STATE.RIGHT)
                 {
                     m_animator.SetTrigger("MOVE_RIGHT");
                     m_curMoveState = ANIM_STATE.RIGHT;
@@ -234,7 +235,7 @@ public class Player : MonoBehaviour
             }
             else //if moving up/down
             {
-                if (direction.y >= 0 && m_curMoveState != ANIM_STATE.UP)
+                if (direction.y > 0 && m_curMoveState != ANIM_STATE.UP)
                 {
                     m_animator.SetTrigger("MOVE_UP");
                     m_curMoveState = ANIM_STATE.UP;

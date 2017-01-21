@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (Player p in m_players)
         {
-            p.m_ignoreInput = b;
+            p.m_ignoreInput = !b;
         }
     }
 
