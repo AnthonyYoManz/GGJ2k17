@@ -16,10 +16,10 @@ public class Player : MonoBehaviour
     private Rigidbody2D         m_rBody;
     [SerializeField]
     private Collider2D          m_collider;
-    //[SerializeField]
-    //private Animator            ////m_animator;
-    //anima[SerializeField]
-    //private float               ////m_animationSpeed;
+    [SerializeField]
+    private Animator            m_animator;
+    [SerializeField]
+    private float               m_animationSpeed;
 
     private Rigidbody2D         m_rb;
     private List<GameObject>    m_interactables;
@@ -39,12 +39,12 @@ public class Player : MonoBehaviour
         m_rb = GetComponent<Rigidbody2D>();
         m_interactables = new List<GameObject>();
 
-        ////m_animator.SetFloat("SPEED", ////m_animationSpeed);
-        ////m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
-	}
-	
-	// Update is called once per frame
-	void Update ()
+        m_animator.SetFloat("SPEED", m_animationSpeed);
+        m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
         if (m_curState != m_prevState)
         {
@@ -79,7 +79,7 @@ public class Player : MonoBehaviour
     {
         //some intput
         //get axis input
-        Vector2 velocity = new Vector2(Input.GetAxis("p" + m_playerID + "Horizontal"), Input.GetAxis("p" + m_playerID + "Vertical")); //= input axis() Axis input
+        Vector2 velocity = new Vector2(Input.GetAxis("p" + m_playerID + "Horizontal"), Input.GetAxis("p" + m_playerID + "Vertical"));
         //if input is not large enough (IE in dead zone, set velocity to vector2.zero)
         velocity *= m_moveSpeed;
 
@@ -90,22 +90,22 @@ public class Player : MonoBehaviour
             {
                 if (velocity.x >= 0)
                 {
-                    ////m_animator.SetTrigger("MOVE_RIGHT");
+                   m_animator.SetTrigger("MOVE_RIGHT");
                 }
                 else //if mostly moving UP
                 {
-                    ////m_animator.SetTrigger("MOVE_LEFT");
+                    m_animator.SetTrigger("MOVE_LEFT");
                 }
             }
             else //if moving up/down
             {
                 if (velocity.y >= 0)
                 {
-                    ////m_animator.SetTrigger("MOVE_UP");
+                    m_animator.SetTrigger("MOVE_UP");
                 }
                 else //if mostly DOWN
                 {
-                    ////m_animator.SetTrigger("MOVE_DOWN");
+                    m_animator.SetTrigger("MOVE_DOWN");
                 }
             }
         }
@@ -139,7 +139,7 @@ public class Player : MonoBehaviour
 
     void WavingTransition()
     {
-        ////m_animator.SetTrigger("WAVING");
+        m_animator.SetTrigger("WAVE");
     }
 
     void WavingUpdate()
