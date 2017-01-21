@@ -38,9 +38,11 @@ public class Player : MonoBehaviour
 
         m_rb = GetComponent<Rigidbody2D>();
         m_interactables = new List<GameObject>();
-
-        m_animator.SetFloat("SPEED", m_animationSpeed);
-        m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
+        if (m_animator)
+        {
+            m_animator.SetFloat("SPEED", m_animationSpeed);
+            m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
+        }
     }
 
     // Update is called once per frame
@@ -84,28 +86,31 @@ public class Player : MonoBehaviour
         velocity *= m_moveSpeed;
 
         //Moving sideways
-        if (velocity != Vector2.zero)
+        if (m_animator)
         {
-            if (velocity.x > velocity.y)
+            if (velocity != Vector2.zero)
             {
-                if (velocity.x >= 0)
+                if (velocity.x > velocity.y)
                 {
-                   m_animator.SetTrigger("MOVE_RIGHT");
+                    if (velocity.x >= 0)
+                    {
+                        m_animator.SetTrigger("MOVE_RIGHT");
+                    }
+                    else //if mostly moving UP
+                    {
+                        m_animator.SetTrigger("MOVE_LEFT");
+                    }
                 }
-                else //if mostly moving UP
+                else //if moving up/down
                 {
-                    m_animator.SetTrigger("MOVE_LEFT");
-                }
-            }
-            else //if moving up/down
-            {
-                if (velocity.y >= 0)
-                {
-                    m_animator.SetTrigger("MOVE_UP");
-                }
-                else //if mostly DOWN
-                {
-                    m_animator.SetTrigger("MOVE_DOWN");
+                    if (velocity.y >= 0)
+                    {
+                        m_animator.SetTrigger("MOVE_UP");
+                    }
+                    else //if mostly DOWN
+                    {
+                        m_animator.SetTrigger("MOVE_DOWN");
+                    }
                 }
             }
         }
@@ -139,7 +144,10 @@ public class Player : MonoBehaviour
 
     void WavingTransition()
     {
-        m_animator.SetTrigger("WAVE");
+        if (m_animator)
+        {
+            m_animator.SetTrigger("WAVE");
+        }
     }
 
     void WavingUpdate()

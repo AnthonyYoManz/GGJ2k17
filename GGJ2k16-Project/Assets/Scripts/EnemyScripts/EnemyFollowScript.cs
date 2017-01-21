@@ -25,14 +25,17 @@ public class EnemyFollowScript : MonoBehaviour {
             if (m_aggro.GetTarget().position - pos != Vector3.zero)
             {
                 Vector3 dir = Vector3.Normalize(m_aggro.GetTarget().position - pos);
-                /*if (dir.x > 0)
+                if (m_animator)
                 {
-                    m_animator.SetTrigger("MOVE_RIGHT");
+                    if (dir.x > 0)
+                    {
+                        m_animator.SetTrigger("MOVE_RIGHT");
+                    }
+                    else
+                    {
+                        m_animator.SetTrigger("MOVE_LEFT");
+                    }
                 }
-                else
-                {
-                    m_animator.SetTrigger("MOVE_LEFT");
-                }*/
             }
 
             transform.position = Vector3.MoveTowards(transform.position, m_aggro.GetTarget().position, m_speed * Time.deltaTime);
