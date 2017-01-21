@@ -180,15 +180,18 @@ public class Player : MonoBehaviour
         //some intput
         //get axis input
         Vector2 velocity = new Vector2(Input.GetAxis("p" + m_playerID + "Horizontal"), Input.GetAxis("p" + m_playerID + "Vertical"));
-        if (m_ignoreInput) velocity = Vector2.zero;//uhm this is a lil dirty but pls don't hate thanks
-
+      
         //if input is not large enough (IE in dead zone, set velocity to vector2.zero)
         velocity *= m_moveSpeed;
 
         //Moving sideways
-        if (m_animator)
+        if (!m_ignoreInput)
         {
             ApplyAnimation(velocity.normalized);
+        }
+        else
+        {
+            velocity = Vector2.zero;
         }
 
         bool actionPressed = Input.GetButtonDown("p" + m_playerID + "Action");

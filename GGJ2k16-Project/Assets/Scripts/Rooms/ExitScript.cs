@@ -59,7 +59,6 @@ public class ExitScript : MonoBehaviour
             }
             else if (!m_snappedToEntry && m_camera.AtAnchorPosition())
             {
-                Debug.Log("kill me");
                 Vector2 temp = m_camera.transform.position;
                 Rect camRect = new Rect(temp - m_camera.m_cameraExtents, m_camera.m_cameraExtents * 2);
                 foreach (Player p in GameManager.s_singleton.GetPlayers())
