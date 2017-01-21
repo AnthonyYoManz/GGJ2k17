@@ -64,8 +64,12 @@ public class AggroScript : MonoBehaviour {
                     {
                         if (hit.collider.tag == m_aggroTargetTag)
                         {
-                            m_aggroed = true;
-                            m_aggroTarget = player.gameObject.transform;
+                            Player thang = hit.collider.gameObject.GetComponent<Player>();
+                            if (!thang.IsDead())
+                            {
+                                m_aggroed = true;
+                                m_aggroTarget = player.gameObject.transform;
+                            }
                         }
                     }
                 }
@@ -81,6 +85,10 @@ public class AggroScript : MonoBehaviour {
             if(player)
             {
                 player.OnHit();
+                if(player.IsDead())
+                {
+                    m_aggroed = false;
+                }
             }
         }
     }
