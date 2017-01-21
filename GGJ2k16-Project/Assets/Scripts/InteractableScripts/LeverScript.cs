@@ -22,7 +22,7 @@ public class LeverScript : InteractableScript {
 
     protected override void BeginInteract()
     {
-        if(!m_interacted)
+        if(!m_interacted && m_triggerable)
         {
             m_triggerable.Trigger();
             m_interacted = true;

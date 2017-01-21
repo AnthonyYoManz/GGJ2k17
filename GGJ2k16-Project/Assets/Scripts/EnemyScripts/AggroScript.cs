@@ -5,6 +5,8 @@ public class AggroScript : MonoBehaviour {
 
     public string m_aggroTargetTag = "Player";
 
+    public float m_searchRadius = 10.0f;
+
     [SerializeField] private bool m_aggroed;
     [SerializeField] private Animator m_animator;
     private Transform m_aggroTarget;
@@ -48,27 +50,36 @@ public class AggroScript : MonoBehaviour {
                 targetAcquired = true;
                 m_aggroed = true;
             }
+
+            if (!m_aggroed)
+            {
+                float dist = Vector2.Distance(transform.position, player.gameObject.transform.position);
+                if (dist <= m_searchRadius)
+                { 
+                    Vector2 dir = player.gameObject.transform.position - transform.position;
+                    dir = Vector3.Normalize(dir);
+                    RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, dist);
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        if (hit.collider.tag == m_aggroTargetTag)
+                        {
+                            m_aggroed = true;
+                            m_aggroTarget = player.gameObject.transform;
+                        }
+                    }
+                }
+            }
         }
-	}
+    }
 
     void OnTriggerEnter2D(Collider2D _col)
     {
-        if (!m_aggroed)
+        if(_col.tag == "Player")
         {
-            if (_col.tag == m_aggroTargetTag)
+            Player player = _col.gameObject.GetComponent<Player>();
+            if(player)
             {
-                float dist = Vector2.Distance(transform.position, _col.transform.position);
-                Vector2 dir = _col.transform.position - transform.position;
-                dir = Vector3.Normalize(dir);
-                RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, dir, dist);
-                foreach (RaycastHit2D hit in hits)
-                {
-                    if (hit.collider.tag == m_aggroTargetTag)
-                    { 
-                        m_aggroed = true;
-                        m_aggroTarget = _col.gameObject.transform;
-                    }
-                }
+                player.OnHit();
             }
         }
     }
@@ -81,5 +92,11 @@ public class AggroScript : MonoBehaviour {
     public Transform GetTarget()
     {
         return m_aggroTarget;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, m_searchRadius);
     }
 }
