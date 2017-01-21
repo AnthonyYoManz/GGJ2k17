@@ -9,12 +9,14 @@ public class ExitScript : MonoBehaviour
     public bool         m_victoryExit;
     public bool         m_allowRoomMove;
     //public bool         m_oneWay;
-
+    public DoorScript   m_door;
     public Transform[]  m_roomStartPositions;
     public Transform    m_offscreenEntry;
     public bool         m_intro;
     private bool        m_snappedToEntry;
     private Collider2D  m_collider;
+    public enum TYPE { NORMAL, QUIT, WIN }
+    public TYPE         m_doorType;
     void Awake()
     {
         m_collider = GetComponent<Collider2D>();
@@ -79,6 +81,7 @@ public class ExitScript : MonoBehaviour
         GameManager.s_singleton.AllowPlayerInput(false);
         m_intro = true;
         m_snappedToEntry = false;
+        if (m_secondRoom != null) m_secondRoom.PlayersAreReady();
     }
 
     void EndWalkThrough()
@@ -88,28 +91,33 @@ public class ExitScript : MonoBehaviour
         m_intro = false;
         m_collider.enabled = true;
         GameManager.s_singleton.AllowPlayerInput(true);
+        if (m_door != null) m_door.CloseDoor();
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
         {
-            if (m_victoryExit)
+            switch (m_doorType)
             {
-                GameManager.s_singleton.Win();
-             
-            }
-            if (m_allowRoomMove)
-            {
-                if (m_firstRoom != null && m_camera.m_curRoom == m_firstRoom)
+                case TYPE.WIN: GameManager.s_singleton.Win(); break;
+                case TYPE.QUIT: GameManager.s_singleton.QuitGame(); break;
+                case TYPE.NORMAL:
                 {
-                    StartWalkThrough();
+                    if (m_allowRoomMove)
+                    {
+                        if (m_firstRoom != null && m_camera.m_curRoom == m_firstRoom)
+                        {
+                            StartWalkThrough();
 
+                        }
+                        //else if (m_secondRoom != null && m_camera.m_curRoom == m_secondRoom && !m_oneWay)
+                        //{
+                        //    StartWalkThrough();
+                        //}
+                    }
+                    break;
                 }
-                //else if (m_secondRoom != null && m_camera.m_curRoom == m_secondRoom && !m_oneWay)
-                //{
-                //    StartWalkThrough();
-                //}
             }
         }
     }
