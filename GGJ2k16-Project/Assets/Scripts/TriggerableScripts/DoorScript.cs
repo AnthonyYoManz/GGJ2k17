@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DoorScript : TriggerableScript {
+public class DoorScript : TriggerableScript
+{
 
     private Vector3 m_startPos;
     private Vector3 m_targetPos;

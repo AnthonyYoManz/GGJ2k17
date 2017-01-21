@@ -8,7 +8,7 @@ public class CameraScript : MonoBehaviour
     public float            m_tileSize;
     public string           m_playerTag = "Player";
     public float            m_speed;
-    public Vector2 m_cameraExtents;
+    public Vector2          m_cameraExtents;
     private List<Player>    m_players;
     // Use this for initialization
     public RoomScript       m_curRoom;
@@ -21,6 +21,15 @@ public class CameraScript : MonoBehaviour
         m_players = new List<Player>();
         //m_camera = GetComponent<Camera>();
     }
+
+
+    public bool AtAnchorPosition()
+    {
+        Vector3 temp = m_curRoom.transform.position;
+        temp.z = m_camZ;
+        return transform.position == temp;
+    }
+
 	void Start ()
     {
         m_camera.orthographicSize = Screen.height / (2 * m_tileSize);
@@ -83,7 +92,8 @@ public class CameraScript : MonoBehaviour
             }
         }
         m_target = new Vector3(position.x, position.y, m_camZ);
-        Vector3 newpos = Vector3.Lerp(transform.position, m_target, m_speed*Time.deltaTime);
+      //  Vector3 newpos = Vector3.Lerp(transform.position, m_target, m_speed*Time.deltaTime);
+        Vector3 newpos = Vector3.MoveTowards(transform.position, m_target, m_speed * Time.deltaTime);
         transform.position = newpos;
     }
 
