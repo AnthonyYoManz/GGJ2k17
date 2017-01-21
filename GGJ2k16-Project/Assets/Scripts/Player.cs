@@ -33,6 +33,9 @@ public class Player : MonoBehaviour
 
     private ANIM_STATE m_curMoveState;
 
+    public GameObject m_interactionIndicator;
+    public float m_interactionIndicatorYOffset = 3.8f;
+
 
     void Awake()
     {
@@ -158,7 +161,26 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Input.GetButton("p" + m_playerID + "Action"))
+        if (m_interactables.Count > 0)
+        {
+            GameObject interactable = m_interactables[0];
+            Vector3 intPos = interactable.transform.position;
+            intPos.y += m_interactionIndicatorYOffset;
+            m_interactionIndicator.transform.position = intPos;
+            if(!m_interactionIndicator.activeSelf)
+            {
+                m_interactionIndicator.SetActive(true);
+            }
+        }
+        else
+        {
+            if (m_interactionIndicator.activeSelf)
+            {
+                m_interactionIndicator.SetActive(false);
+            }
+        }
+
+            if (Input.GetButton("p" + m_playerID + "Action"))
         {
             if (m_interactables.Count == 0)
             {
