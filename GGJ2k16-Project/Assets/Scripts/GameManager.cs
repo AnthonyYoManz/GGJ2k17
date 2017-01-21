@@ -5,16 +5,23 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager   s_singleton;
+    
     private Player[]            m_players;
     private CameraScript        m_cameraScript;
     private Vector2[]           m_playerPositions;
+
+
+    public Player[] GetPlayers()
+    {
+        return m_players;
+    }
+
 	// Use this for initialization
 	void Awake ()
     {
         Debug.Assert(s_singleton == null, "Only one game manager allowed");
         s_singleton = this;
         DontDestroyOnLoad(this.gameObject);
-
     }
 
     void Start()
@@ -23,7 +30,7 @@ public class GameManager : MonoBehaviour
         m_players = new Player[players.Length];
         for (int i = 0; i < players.Length; ++i) m_players[i] = players[i].GetComponent<Player>();
 
-        m_cameraScript = GameObject.FindGameObjectWithTag("Camera").GetComponent<CameraScript>();
+        m_cameraScript = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>();
         //change room changing to go through this script 
     }
 
@@ -35,6 +42,7 @@ public class GameManager : MonoBehaviour
             //if (p.m_curState == Player.STATE.DEAD)
             {
                 //if input == restart
+                if (false)
                 {
                     RestartLevel();
                 }
@@ -43,6 +51,10 @@ public class GameManager : MonoBehaviour
 
 	}
 
+    public void Win()
+    {
+        Debug.Log("winnnnnnnnnnerrrs");
+    }
 
     public void RestartLevel()
     {
@@ -53,4 +65,13 @@ public class GameManager : MonoBehaviour
             p.transform.position = m_playerPositions[++idx];
         }
     }
+
+    public void AllowPlayerInput(bool b)
+    {
+        foreach (Player p in m_players)
+        {
+            p.m_ignoreInput = b;
+        }
+    }
+
 }

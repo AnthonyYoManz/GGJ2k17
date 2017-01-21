@@ -51,7 +51,7 @@ public class RoomScript : MonoBehaviour
     {
         foreach(GameObject enemy in m_roomEnemies)
         {
-            Debug.Log("boom?");
+
             if (m_explosionPrefab)
             {
                 GameObject explosion = Instantiate(m_explosionPrefab);

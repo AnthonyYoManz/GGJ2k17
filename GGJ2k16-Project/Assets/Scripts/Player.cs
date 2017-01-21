@@ -4,37 +4,81 @@ using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
+    public bool m_ignoreInput;
     //Bit dirty but oh well!
-    public CameraScript         m_cam;
+    public CameraScript m_cam;
     public int m_playerID;
     public enum STATE { DEFAULT, WAVING, DEAD, NO_STATE };
     public enum ANIM_STATE { IDLE, LEFT, RIGHT, UP, DOWN, WAVING };
 
-    public STATE                m_curState;
+    public STATE m_curState;
 
     public int m_lives = 3;
     public float m_onHitInvulDuration = 1.0f;
     private float m_invulTimer;
 
     [SerializeField]
-    private float               m_moveSpeed;
-    private STATE               m_prevState;        
-    private Rigidbody2D         m_rBody;
+    private float m_moveSpeed;
+    private STATE m_prevState;
+    private Rigidbody2D m_rBody;
     [SerializeField]
-    private Collider2D          m_collider;
+    private Collider2D m_collider;
     [SerializeField]
-    private Animator            m_animator;
+    private Animator m_animator;
     [SerializeField]
-    private float               m_animationSpeed;
+    private float m_animationSpeed;
 
-    private Rigidbody2D         m_rb;
-    private List<GameObject>    m_interactables;
+    private Rigidbody2D m_rb;
+    private List<GameObject> m_interactables;
     SpriteRenderer sprRend;
 
     private ANIM_STATE m_curMoveState;
 
 
-    void Awake()
+    public float GetMaxMoveSpeed()
+    {
+        return m_moveSpeed;
+    }
+    public bool MoveTowards(Vector3 target, float maxSpeed)
+    {
+        Vector3 prevPos = transform.position;
+        transform.position = Vector2.MoveTowards(transform.position, target, maxSpeed);
+
+        Vector3 dir = (transform.position - prevPos).normalized;
+        ApplyAnimation(dir);
+
+        return transform.position == target;
+    }
+    //public void ForceAnimation(ANIM_STATE state)
+    //{ 
+    //    if (m_curMoveState != state)
+    //    {
+    //        //Wish i'd just mapped this KILL ME
+    //        switch (state)
+    //        {
+    //            case ANIM_STATE.IDLE: m_animator.SetTrigger("IDLE"); break;
+    //            case ANIM_STATE.DOWN: m_animator.SetTrigger("MOVE_DOWN"); break;
+    //            case ANIM_STATE.UP: m_animator.SetTrigger("MOVE_UP"); break;
+    //            case ANIM_STATE.LEFT: m_animator.SetTrigger("MOVE_LEFT"); break;
+    //            case ANIM_STATE.RIGHT: m_animator.SetTrigger("MOVE_RIGHT"); break;
+    //            case ANIM_STATE.WAVING: m_animator.SetTrigger("WAVE"); break;
+    //        }
+            
+    //        m_curMoveState = state;
+    //    }
+    //}
+
+    //public void ForceSetAnimSpeed(float speed)
+    //{
+    //    m_animator.SetFloat("SPEED", speed);
+    //}
+
+    //public void ForceSetDefaultAnimSpeed()
+    //{
+    //    m_animator.SetFloat("SPEED", m_animationSpeed);
+    //}
+
+        void Awake()
     {
         //Component refs set up in inspector
 
@@ -52,7 +96,8 @@ public class Player : MonoBehaviour
 
         if (m_animator)
         {
-            m_animator.SetFloat("SPEED", m_animationSpeed);
+
+            m_animator.SetFloat("SPEED", 0.0f);
             m_curMoveState = ANIM_STATE.IDLE;
             m_animator.SetTrigger("IDLE");//Unless there is also an idle anim..
         }
@@ -114,48 +159,15 @@ public class Player : MonoBehaviour
         //some intput
         //get axis input
         Vector2 velocity = new Vector2(Input.GetAxis("p" + m_playerID + "Horizontal"), Input.GetAxis("p" + m_playerID + "Vertical"));
+        if (m_ignoreInput) velocity = Vector2.zero;//uhm this is a lil dirty but pls don't hate thanks
+
         //if input is not large enough (IE in dead zone, set velocity to vector2.zero)
         velocity *= m_moveSpeed;
 
         //Moving sideways
         if (m_animator)
         {
-            if (velocity != Vector2.zero)
-            {
-                m_animator.SetFloat("SPEED", 1.0f);
-                if (Mathf.Abs(velocity.x) > Mathf.Abs(velocity.y))
-                {
-                    if (velocity.x >= 0 && m_curMoveState != ANIM_STATE.RIGHT)
-                    {
-                        m_animator.SetTrigger("MOVE_RIGHT");
-                        m_curMoveState = ANIM_STATE.RIGHT;
-                    }
-                    else if (velocity.x < 0 &&  m_curMoveState != ANIM_STATE.LEFT)
-                    {
-                        m_animator.SetTrigger("MOVE_LEFT");
-                        m_curMoveState = ANIM_STATE.LEFT;
-                    }
-                }
-                else //if moving up/down
-                {
-                    if (velocity.y >= 0 && m_curMoveState != ANIM_STATE.UP)
-                    {
-                        m_animator.SetTrigger("MOVE_UP");
-                        m_curMoveState = ANIM_STATE.UP;
-                    }
-                    else if (velocity.y < 0 && m_curMoveState != ANIM_STATE.DOWN)//if mostly DOWN
-                    {
-                        m_curMoveState = ANIM_STATE.DOWN;
-                        m_animator.SetTrigger("MOVE_DOWN");
-                    }
-                }
-            }
-            else if (m_curMoveState != ANIM_STATE.IDLE)//if not moving
-            {
-                m_curMoveState = ANIM_STATE.IDLE;
-                //m_animator.SetTrigger("IDLE");
-                m_animator.SetFloat("SPEED", 0.0f);
-            }
+            ApplyAnimation(velocity.normalized);
         }
 
         if (Input.GetButton("p" + m_playerID + "Action"))
@@ -180,6 +192,47 @@ public class Player : MonoBehaviour
         m_rb.MovePosition(pos);
     }
 
+    private void ApplyAnimation(Vector2 direction)
+    {
+        if (direction != Vector2.zero)
+        {
+            m_animator.SetFloat("SPEED", m_animationSpeed);
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            {
+                if (direction.x >= 0 && m_curMoveState != ANIM_STATE.RIGHT)
+                {
+                    m_animator.SetTrigger("MOVE_RIGHT");
+                    m_curMoveState = ANIM_STATE.RIGHT;
+                }
+                else if (direction.x < 0 && m_curMoveState != ANIM_STATE.LEFT)
+                {
+                    m_animator.SetTrigger("MOVE_LEFT");
+                    m_curMoveState = ANIM_STATE.LEFT;
+                }
+            }
+            else //if moving up/down
+            {
+                if (direction.y >= 0 && m_curMoveState != ANIM_STATE.UP)
+                {
+                    m_animator.SetTrigger("MOVE_UP");
+                    m_curMoveState = ANIM_STATE.UP;
+                }
+                else if (direction.y < 0 && m_curMoveState != ANIM_STATE.DOWN)//if mostly DOWN
+                {
+                    m_curMoveState = ANIM_STATE.DOWN;
+                    m_animator.SetTrigger("MOVE_DOWN");
+                }
+            }
+        }
+        else if (m_curMoveState != ANIM_STATE.IDLE)//if not moving
+        {
+            m_curMoveState = ANIM_STATE.IDLE;
+            //m_animator.SetTrigger("IDLE");
+            m_animator.SetFloat("SPEED", 0.0f);
+        }
+
+    }
+
     void MovingEnd()
     {
 
@@ -187,9 +240,9 @@ public class Player : MonoBehaviour
 
     void WavingTransition()
     {
-        if (m_animator && m_curMoveState != ANIM_STATE.WAVING)
+        if (m_animator && m_curMoveState != ANIM_STATE.WAVING && !m_ignoreInput)
         {
-            m_animator.SetFloat("SPEED", 1.0f);
+            m_animator.SetFloat("SPEED", m_animationSpeed);
             m_animator.SetTrigger("WAVE");
             m_curMoveState = ANIM_STATE.WAVING;
         }
