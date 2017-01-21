@@ -29,11 +29,12 @@ public class AggroScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+        bool targetAcquired = false;
         foreach(Player player in m_players)
         {
             if(player.IsWaving())
             {
-                if (m_aggroed)
+                if (targetAcquired)
                 {
                     if (Vector2.Distance(transform.position, player.gameObject.transform.position) < Vector2.Distance(transform.position, m_aggroTarget.position))
                     {
@@ -41,9 +42,10 @@ public class AggroScript : MonoBehaviour {
                     }
                 }
                 else
-                { 
-                        m_aggroTarget = player.gameObject.transform;
+                {
+                    m_aggroTarget = player.gameObject.transform;
                 }
+                targetAcquired = true;
                 m_aggroed = true;
             }
         }
