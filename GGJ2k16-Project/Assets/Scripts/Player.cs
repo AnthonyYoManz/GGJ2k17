@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 
 public class Player : MonoBehaviour
-{ 
+{
+    //Bit dirty but oh well!
+    public CameraScript         m_cam;
     public int m_playerID;
     public enum STATE { DEFAULT, WAVING, NO_STATE };
     public STATE                m_curState;
@@ -151,7 +153,7 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D _col)
     {
-        if(_col.tag == "Interactable")
+        if (_col.tag == "Interactable")
         {
             m_interactables.Add(_col.gameObject);
         }

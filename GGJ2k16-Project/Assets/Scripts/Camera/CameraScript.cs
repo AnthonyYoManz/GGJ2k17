@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 public class CameraScript : MonoBehaviour
 {
+    public float            m_tileSize;
     public string           m_playerTag = "Player";
     public float            m_speed;
+    public Vector2 m_cameraExtents;
     private List<Player>    m_players;
     // Use this for initialization
     public RoomScript       m_curRoom;
-    public Camera          m_camera;
-    private Vector2         m_cameraExtents;
+    public Camera           m_camera;
     private Vector3         m_target;
     private int             m_camZ = -10;
    // private RoomScript m_prevRoom;need this?
@@ -21,8 +22,10 @@ public class CameraScript : MonoBehaviour
     }
 	void Start ()
     {
+        m_camera.orthographicSize = Screen.height / (2 * m_tileSize);
+
         m_cameraExtents.y = m_camera.orthographicSize;
-        m_cameraExtents.x = m_cameraExtents.y * 16/9;
+        m_cameraExtents.x = m_cameraExtents.y * Screen.width/ Screen.height;
 
         GameObject[] players = GameObject.FindGameObjectsWithTag(m_playerTag);
         foreach (GameObject player in players)
@@ -36,7 +39,7 @@ public class CameraScript : MonoBehaviour
     }
 	
 	// Update is called once per frame
-	void Update ()
+	void LateUpdate ()
     {
         Vector3 temp = transform.position;
         temp.z = m_camZ;
@@ -70,9 +73,7 @@ public class CameraScript : MonoBehaviour
         {
             position.x = roomCenter.x - m_curRoom.m_collider.bounds.extents.x + m_cameraExtents.x;
         }
-
-     
-
+        
         m_target = new Vector3(position.x, position.y, m_camZ);
         Vector3 newpos = Vector3.Lerp(transform.position, m_target, m_speed*Time.deltaTime);
         transform.position = newpos;
@@ -80,6 +81,7 @@ public class CameraScript : MonoBehaviour
 
     public void MoveToRoom(RoomScript _room)
     {
-
+        if (_room !=null)
+        m_curRoom = _room;
     }
 }
