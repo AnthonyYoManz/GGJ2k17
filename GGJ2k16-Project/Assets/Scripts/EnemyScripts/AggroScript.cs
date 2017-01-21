@@ -9,7 +9,7 @@ public class AggroScript : MonoBehaviour {
     [SerializeField] private Animator m_animator;
     private Transform m_aggroTarget;
     private List<Player> m_players;
-
+  
 	// Use this for initialization
 	void Start ()
     {
@@ -41,8 +41,8 @@ public class AggroScript : MonoBehaviour {
                     }
                 }
                 else
-                {
-                    m_aggroTarget = player.gameObject.transform;
+                { 
+                        m_aggroTarget = player.gameObject.transform;
                 }
                 m_aggroed = true;
             }

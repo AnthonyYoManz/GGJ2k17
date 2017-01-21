@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/AntScene.unity
+- path: Assets/Scenes/Orlando.unity
   isLoaded: 1
   isActive: 1
