@@ -22,4 +22,9 @@ public class InteractableScript : MonoBehaviour {
     {
         //override and do stuff
     }
+
+    public virtual bool IsInteractable()
+    {
+        return true;
+    }
 }

@@ -27,4 +27,9 @@ public class LeverScript : InteractableScript {
             m_interacted = true;
         }
     }
+
+    public override bool IsInteractable()
+    {
+        return !m_interacted;
+    }
 }
