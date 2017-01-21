@@ -23,6 +23,9 @@ public class EnemyVelocityChaseScript : MonoBehaviour {
         Debug.Assert(m_aggro);
         m_velocity = new Vector2(0, 0);
         m_direction = new Vector2(0, 0);
+        m_animator.SetFloat("SPEED", 1.0f);
+        //testing a thing
+        m_animator.SetTrigger("IDLE");
     }
 
     // Update is called once per frame
@@ -45,6 +48,10 @@ public class EnemyVelocityChaseScript : MonoBehaviour {
                         m_animator.SetTrigger("MOVE_LEFT");
                     }
                 }
+            }
+            else
+            {
+                m_animator.SetTrigger("IDLE");
             }
 
         }
