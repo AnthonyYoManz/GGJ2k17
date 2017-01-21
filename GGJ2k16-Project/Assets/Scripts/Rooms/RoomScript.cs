@@ -4,8 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(BoxCollider2D))]
 public class RoomScript : MonoBehaviour
 {
-
-    
+  
     public BoxCollider2D m_collider { get; private set; }
 
     //Don't know if we need any update stuff yet so leave it for now
@@ -13,6 +12,11 @@ public class RoomScript : MonoBehaviour
 	void Awake ()
     {
         m_collider = GetComponent<BoxCollider2D>();
+    }
+
+    void Start()
+    {
+    
     }
 	
 	// Update is called once per frame
