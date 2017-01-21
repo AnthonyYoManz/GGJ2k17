@@ -4,6 +4,7 @@ using System.Collections;
 public class LeverScript : InteractableScript {
 
     public TriggerableScript m_triggerable; //make this do thing thx
+    public Sprite m_activeSprite;
 
     private bool m_interacted;
 
@@ -25,6 +26,14 @@ public class LeverScript : InteractableScript {
         {
             m_triggerable.Trigger();
             m_interacted = true;
+            if(m_activeSprite)
+            {
+                SpriteRenderer sprRnd = GetComponent<SpriteRenderer>();
+                if(sprRnd)
+                {
+                    sprRnd.sprite = m_activeSprite;
+                }
+            }
         }
     }
 
