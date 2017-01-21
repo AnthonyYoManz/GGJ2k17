@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class AggroScript : MonoBehaviour {
 
     public string m_aggroTargetTag = "Player";
-
     public float m_searchRadius = 10.0f;
 
     [SerializeField] private bool m_aggroed;
