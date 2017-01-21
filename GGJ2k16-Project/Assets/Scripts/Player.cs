@@ -7,8 +7,12 @@ public class Player : MonoBehaviour
     //Bit dirty but oh well!
     public CameraScript         m_cam;
     public int m_playerID;
-    public enum STATE { DEFAULT, WAVING, NO_STATE };
+    public enum STATE { DEFAULT, WAVING, DEAD, NO_STATE };
     public STATE                m_curState;
+
+    public int m_lives = 3;
+    public float m_onHitInvulDuration = 1.0f;
+    private float m_invulTimer;
 
     [SerializeField]
     private float               m_moveSpeed;
@@ -23,6 +27,7 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D         m_rb;
     private List<GameObject>    m_interactables;
+    SpriteRenderer sprRend;
 
     void Awake()
     {
@@ -33,9 +38,10 @@ public class Player : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        m_invulTimer = m_onHitInvulDuration;
         m_prevState = STATE.NO_STATE;
         m_curState = STATE.DEFAULT;
-
+        sprRend = GetComponent<SpriteRenderer>();
         m_rb = GetComponent<Rigidbody2D>();
         m_interactables = new List<GameObject>();
         if (m_animator)
@@ -48,6 +54,25 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update ()
     {
+        if (m_curState != STATE.DEAD)
+        {
+            if (m_invulTimer < m_onHitInvulDuration)
+            {
+                m_invulTimer += Time.deltaTime;
+                if (sprRend)
+                {
+                    sprRend.color = new Color(1.0f, 1.0f, 1.0f, 0.1f);
+                }
+            }
+            else
+            {
+                if (sprRend)
+                {
+                    sprRend.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                }
+            }
+        }
+
         if (m_curState != m_prevState)
         {
             switch (m_prevState)
@@ -163,6 +188,14 @@ public class Player : MonoBehaviour
 
     }
 
+    void OnCollisionEnter2D(Collision2D _col)
+    {
+        if(_col.gameObject.tag == "Enemy")
+        {
+            
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D _col)
     {
         if (_col.tag == "Interactable")
@@ -181,6 +214,41 @@ public class Player : MonoBehaviour
 
     public bool IsWaving()
     {
-        return m_curState == STATE.WAVING;
+        return (m_curState == STATE.WAVING);
+    }
+
+    public bool IsInvulnerable()
+    {
+        return (m_invulTimer < m_onHitInvulDuration);
+    }
+
+    public void OnHit()
+    {
+        if (!IsInvulnerable())
+        {
+            Debug.Log("OUCH! Who's been programming by copying and pasting?");
+            m_lives--;
+            if (m_lives <= 0)
+            {
+                m_curState = STATE.DEAD;
+                FlameIRLPlayer();
+                sprRend.color = new Color(0, 0, 0, 0);
+            }
+            m_invulTimer = 0.0f;
+        }
+    }
+
+    public void FlameIRLPlayer()
+    {
+        int randy = Random.Range(0, 5);
+        switch(randy)
+        {
+            case 0:
+                Debug.Log("ur shit mate");
+                break;
+            default:
+                Debug.Log("You died");
+                break;
+        }
     }
 }
