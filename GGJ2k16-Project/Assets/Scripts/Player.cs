@@ -346,7 +346,7 @@ public class Player : MonoBehaviour
     {
         if (!IsInvulnerable())
         {
-            Debug.Log("OUCH! Who's been programming by copying and pasting?");
+            Debug.Log("OUCH! Who's been programming by copying and pasting code?");
             m_lives--;
             if (m_lives <= 0)
             {
