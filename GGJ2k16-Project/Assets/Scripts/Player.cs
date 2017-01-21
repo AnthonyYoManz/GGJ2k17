@@ -374,4 +374,9 @@ public class Player : MonoBehaviour
                 break;
         }
     }
+
+    public bool IsDead()
+    {
+        return (m_curState == STATE.DEAD);
+    }
 }
