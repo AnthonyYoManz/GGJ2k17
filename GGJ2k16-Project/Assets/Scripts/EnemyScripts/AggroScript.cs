@@ -37,7 +37,9 @@ public class AggroScript : MonoBehaviour {
             {
                 if (targetAcquired)
                 {
-                    if (Vector2.Distance(transform.position, player.gameObject.transform.position) < Vector2.Distance(transform.position, m_aggroTarget.position))
+                    float distToCurrent = Vector2.Distance(transform.position, player.gameObject.transform.position);
+                    float distToTarget = Vector2.Distance(transform.position, m_aggroTarget.position);
+                    if (distToCurrent < distToTarget)
                     {
                         m_aggroTarget = player.gameObject.transform;
                     }
@@ -71,7 +73,7 @@ public class AggroScript : MonoBehaviour {
         }
     }
 
-    void OnTriggerEnter2D(Collider2D _col)
+    void OnTriggerStay2D(Collider2D _col)
     {
         if(_col.tag == "Player")
         {
