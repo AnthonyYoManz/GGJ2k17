@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     public CameraScript         m_cam;
     public int m_playerID;
     public enum STATE { DEFAULT, WAVING, DEAD, NO_STATE };
+    public enum ANIM_STATE { IDLE, LEFT, RIGHT, UP, DOWN, WAVING };
+
     public STATE                m_curState;
 
     public int m_lives = 3;
@@ -29,6 +31,9 @@ public class Player : MonoBehaviour
     private List<GameObject>    m_interactables;
     SpriteRenderer sprRend;
 
+    private ANIM_STATE m_curMoveState;
+
+
     void Awake()
     {
         //Component refs set up in inspector
@@ -44,10 +49,12 @@ public class Player : MonoBehaviour
         sprRend = GetComponent<SpriteRenderer>();
         m_rb = GetComponent<Rigidbody2D>();
         m_interactables = new List<GameObject>();
+
         if (m_animator)
         {
             m_animator.SetFloat("SPEED", m_animationSpeed);
-            m_animator.SetTrigger("MOVE_RIGHT");//Unless there is also an idle anim..
+            m_curMoveState = ANIM_STATE.IDLE;
+            m_animator.SetTrigger("IDLE");//Unless there is also an idle anim..
         }
     }
 
@@ -115,28 +122,39 @@ public class Player : MonoBehaviour
         {
             if (velocity != Vector2.zero)
             {
+                m_animator.SetFloat("SPEED", 1.0f);
                 if (Mathf.Abs(velocity.x) > Mathf.Abs(velocity.y))
                 {
-                    if (velocity.x >= 0)
+                    if (velocity.x >= 0 && m_curMoveState != ANIM_STATE.RIGHT)
                     {
                         m_animator.SetTrigger("MOVE_RIGHT");
+                        m_curMoveState = ANIM_STATE.RIGHT;
                     }
-                    else //if mostly moving UP
+                    else if (velocity.x < 0 &&  m_curMoveState != ANIM_STATE.LEFT)
                     {
                         m_animator.SetTrigger("MOVE_LEFT");
+                        m_curMoveState = ANIM_STATE.LEFT;
                     }
                 }
                 else //if moving up/down
                 {
-                    if (velocity.y >= 0)
+                    if (velocity.y >= 0 && m_curMoveState != ANIM_STATE.UP)
                     {
                         m_animator.SetTrigger("MOVE_UP");
+                        m_curMoveState = ANIM_STATE.UP;
                     }
-                    else //if mostly DOWN
+                    else if (velocity.y < 0 && m_curMoveState != ANIM_STATE.DOWN)//if mostly DOWN
                     {
+                        m_curMoveState = ANIM_STATE.DOWN;
                         m_animator.SetTrigger("MOVE_DOWN");
                     }
                 }
+            }
+            else if (m_curMoveState != ANIM_STATE.IDLE)//if not moving
+            {
+                m_curMoveState = ANIM_STATE.IDLE;
+                //m_animator.SetTrigger("IDLE");
+                m_animator.SetFloat("SPEED", 0.0f);
             }
         }
 
@@ -169,9 +187,11 @@ public class Player : MonoBehaviour
 
     void WavingTransition()
     {
-        if (m_animator)
+        if (m_animator && m_curMoveState != ANIM_STATE.WAVING)
         {
+            m_animator.SetFloat("SPEED", 1.0f);
             m_animator.SetTrigger("WAVE");
+            m_curMoveState = ANIM_STATE.WAVING;
         }
     }
 
@@ -185,7 +205,6 @@ public class Player : MonoBehaviour
 
     void WavingEnd()
     {
-
     }
 
     void OnCollisionEnter2D(Collision2D _col)
