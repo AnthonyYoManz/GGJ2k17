@@ -26,6 +26,7 @@ public class RoomScript : MonoBehaviour
             if(m_collider.bounds.Contains(epos))
             {
                 m_roomEnemies.Add(enemy);
+                enemy.gameObject.SetActive(false);
             }
         }
     }
@@ -34,7 +35,15 @@ public class RoomScript : MonoBehaviour
     {
     
     }
-	
+
+    public void PlayersAreReady()
+    {
+     
+        foreach (GameObject enemy in m_roomEnemies)
+        {
+            enemy.SetActive(true);
+        }
+    }
 	// Update is called once per frame
 	void Update () {
         if (m_exit)

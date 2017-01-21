@@ -58,6 +58,12 @@ public class GameManager : MonoBehaviour
         Debug.Log("winnnnnnnnnnerrrs");
     }
 
+    public void QuitGame()
+    {
+        Debug.Log("quit");
+        Application.Quit();
+    }
+
     public void RestartLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
