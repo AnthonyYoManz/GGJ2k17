@@ -22,15 +22,17 @@ public class GameManager : MonoBehaviour
         Debug.Assert(s_singleton == null, "Only one game manager allowed");
         s_singleton = this;
         DontDestroyOnLoad(this.gameObject);
-    }
-
-    void Start()
-    {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
         m_players = new Player[players.Length];
         for (int i = 0; i < players.Length; ++i) m_players[i] = players[i].GetComponent<Player>();
 
         m_cameraScript = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>();
+
+    }
+
+    void Start()
+    {
+       
         //change room changing to go through this script 
     }
 
