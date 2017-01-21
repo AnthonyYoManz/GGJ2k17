@@ -56,6 +56,26 @@ public class RoomScript : MonoBehaviour
         }
 	}
 
+    ////So, an enemy calls this to kill itself. NIOCE.
+    //public void KillMePls(GameObject who)
+    //{
+    //    bool gotem = false;
+    //    foreach (GameObject enemy in m_roomEnemies)
+    //    {
+    //        if (m_explosionPrefab && enemy == who)
+    //        {
+    //            GameObject explosion = Instantiate(m_explosionPrefab);
+    //            explosion.transform.position = enemy.transform.position;
+    //            gotem = true;
+    //            break;
+    //        }
+    //    }
+    //    if (gotem)
+    //    {
+    //        m_roomEnemies.Remove(who);
+    //        Destroy(who);
+    //    }
+    //}
     public void ExploderiseEnemiesPlease()
     {
         foreach(GameObject enemy in m_roomEnemies)
