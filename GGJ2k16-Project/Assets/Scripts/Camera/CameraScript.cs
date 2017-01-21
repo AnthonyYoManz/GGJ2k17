@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class CameraScript : MonoBehaviour
 {
+    public bool             m_anchor;
     public float            m_tileSize;
     public string           m_playerTag = "Player";
     public float            m_speed;
@@ -45,35 +46,42 @@ public class CameraScript : MonoBehaviour
         temp.z = m_camZ;
         transform.position = temp;
 
-
-        /*Move to average of player positions*/
         Vector2 position = Vector2.zero;
-        foreach (var player in m_players)
-        {
-            position += (Vector2)player.transform.position;
-        }
-        position /= m_players.Count;
-
         Vector2 roomCenter = m_curRoom.transform.position;
-       
-        if (position.y + m_cameraExtents.y >= roomCenter.y + m_curRoom.m_collider.bounds.extents.y)
-        {
-            position.y = roomCenter.y + m_curRoom.m_collider.bounds.extents.y - m_cameraExtents.y;
-        }
-        else if (position.y - m_cameraExtents.y <= roomCenter.y - m_curRoom.m_collider.bounds.extents.y)
-        {
-            position.y = roomCenter.y - m_curRoom.m_collider.bounds.extents.y + m_cameraExtents.y;
-        }
 
-        if (position.x + m_cameraExtents.x >= roomCenter.x + m_curRoom.m_collider.bounds.extents.x)
+        if (m_anchor)
         {
-            position.x = roomCenter.x + m_curRoom.m_collider.bounds.extents.x - m_cameraExtents.x;
+            position = roomCenter;
         }
-        else if (position.x - m_cameraExtents.x <= roomCenter.x - m_curRoom.m_collider.bounds.extents.x)
+        else
         {
-            position.x = roomCenter.x - m_curRoom.m_collider.bounds.extents.x + m_cameraExtents.x;
+            /*Move to average of player positions*/
+
+            foreach (var player in m_players)
+            {
+                position += (Vector2)player.transform.position;
+            }
+            position /= m_players.Count;
+            
+
+            if (position.y + m_cameraExtents.y >= roomCenter.y + m_curRoom.m_collider.bounds.extents.y)
+            {
+                position.y = roomCenter.y + m_curRoom.m_collider.bounds.extents.y - m_cameraExtents.y;
+            }
+            else if (position.y - m_cameraExtents.y <= roomCenter.y - m_curRoom.m_collider.bounds.extents.y)
+            {
+                position.y = roomCenter.y - m_curRoom.m_collider.bounds.extents.y + m_cameraExtents.y;
+            }
+
+            if (position.x + m_cameraExtents.x >= roomCenter.x + m_curRoom.m_collider.bounds.extents.x)
+            {
+                position.x = roomCenter.x + m_curRoom.m_collider.bounds.extents.x - m_cameraExtents.x;
+            }
+            else if (position.x - m_cameraExtents.x <= roomCenter.x - m_curRoom.m_collider.bounds.extents.x)
+            {
+                position.x = roomCenter.x - m_curRoom.m_collider.bounds.extents.x + m_cameraExtents.x;
+            }
         }
-        
         m_target = new Vector3(position.x, position.y, m_camZ);
         Vector3 newpos = Vector3.Lerp(transform.position, m_target, m_speed*Time.deltaTime);
         transform.position = newpos;
