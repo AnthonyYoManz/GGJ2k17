@@ -36,8 +36,9 @@ public class Player : MonoBehaviour
 
     public GameObject m_interactionIndicator;
     public float m_interactionIndicatorYOffset = 3.8f;
-
-
+    private Timer m_waveTimer;
+    [SerializeField]
+    private float m_minWaveDuration;
     public float GetMaxMoveSpeed()
     {
         return m_moveSpeed;
@@ -85,7 +86,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         //Component refs set up in inspector
-
+        
     }
 
 	// Use this for initialization
@@ -97,7 +98,8 @@ public class Player : MonoBehaviour
         sprRend = GetComponent<SpriteRenderer>();
         m_rb = GetComponent<Rigidbody2D>();
         m_interactables = new List<GameObject>();
-
+        m_waveTimer = new Timer();
+       
         if (m_animator)
         {
 
@@ -268,12 +270,14 @@ public class Player : MonoBehaviour
             m_animator.SetFloat("SPEED", m_animationSpeed);
             m_animator.SetTrigger("WAVE");
             m_curMoveState = ANIM_STATE.WAVING;
+            m_waveTimer.Restart();
         }
+
     }
 
     void WavingUpdate()
     {
-        if(Input.GetButtonUp("p" + m_playerID + "Action"))
+        if(m_waveTimer.Elapsed() >= m_minWaveDuration && !Input.GetButton("p" + m_playerID + "Action"))
         {
             m_curState = STATE.DEFAULT;
         }
