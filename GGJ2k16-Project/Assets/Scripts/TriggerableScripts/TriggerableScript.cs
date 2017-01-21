@@ -5,9 +5,10 @@ public class TriggerableScript : MonoBehaviour {
 
     [SerializeField]
     protected bool m_triggered;
+    public int m_triggers = 1;
 
-	// Use this for initialization
-	void Start ()
+    // Use this for initialization
+    void Start ()
     {
         m_triggered = false;
 	}
@@ -22,8 +23,12 @@ public class TriggerableScript : MonoBehaviour {
     {
         if (!m_triggered)
         {
-            m_triggered = true;
-            OnTrigger();
+            m_triggers--;
+            if (m_triggers <= 0)
+            {
+                m_triggered = true;
+                OnTrigger();
+            }
         }
     }
 
