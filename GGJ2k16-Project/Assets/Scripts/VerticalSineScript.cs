@@ -14,7 +14,10 @@ public class VerticalSineScript : MonoBehaviour
     {
         m_curTime = 0;
         m_startPos = transform.position;
-	}
+        Vector3 newPos = transform.position;
+        newPos.y = m_startPos.y + Mathf.Sin(m_curTime) * m_magnitude;
+        transform.position = newPos;
+    }
 	
 	// Update is called once per frame
 	void Update ()

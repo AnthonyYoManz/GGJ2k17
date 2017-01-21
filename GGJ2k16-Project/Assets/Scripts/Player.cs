@@ -30,15 +30,17 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D m_rb;
     private List<GameObject> m_interactables;
-    SpriteRenderer sprRend;
+    SpriteRenderer m_sprRend;
 
     private ANIM_STATE m_curMoveState;
 
     public GameObject m_interactionIndicator;
     public float m_interactionIndicatorYOffset = 3.8f;
-    private Timer m_waveTimer;
-    [SerializeField]
-    private float m_minWaveDuration;
+
+    public Transform m_otherTransform;
+    public int m_minSortingLayer = 6;
+
+
     public float GetMaxMoveSpeed()
     {
         return m_moveSpeed;
@@ -86,7 +88,7 @@ public class Player : MonoBehaviour
     void Awake()
     {
         //Component refs set up in inspector
-        
+
     }
 
 	// Use this for initialization
@@ -95,11 +97,10 @@ public class Player : MonoBehaviour
         m_invulTimer = m_onHitInvulDuration;
         m_prevState = STATE.NO_STATE;
         m_curState = STATE.DEFAULT;
-        sprRend = GetComponent<SpriteRenderer>();
+        m_sprRend = GetComponent<SpriteRenderer>();
         m_rb = GetComponent<Rigidbody2D>();
         m_interactables = new List<GameObject>();
-        m_waveTimer = new Timer();
-       
+
         if (m_animator)
         {
 
@@ -110,23 +111,23 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
         if (m_curState != STATE.DEAD)
         {
             if (m_invulTimer < m_onHitInvulDuration)
             {
                 m_invulTimer += Time.deltaTime;
-                if (sprRend)
+                if (m_sprRend)
                 {
-                    sprRend.color = new Color(1.0f, 1.0f, 1.0f, 0.1f);
+                    m_sprRend.color = new Color(1.0f, 1.0f, 1.0f, 0.1f);
                 }
             }
             else
             {
-                if (sprRend)
+                if (m_sprRend)
                 {
-                    sprRend.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    m_sprRend.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 }
             }
         }
@@ -146,11 +147,22 @@ public class Player : MonoBehaviour
         }
         m_prevState = m_curState;
 
-        
+
         switch (m_curState)
         {
             case STATE.DEFAULT: MovingUpdate(); break;
             case STATE.WAVING: WavingUpdate(); break;
+        }
+
+        Vector3 pos = transform.position;
+        Vector3 oPos = m_otherTransform.position;
+        if (pos.y < oPos.y)
+        {
+            m_sprRend.sortingOrder = m_minSortingLayer + 1;
+        }
+        else
+        {
+            m_sprRend.sortingOrder = m_minSortingLayer;
         }
 	}
 
@@ -176,15 +188,35 @@ public class Player : MonoBehaviour
             ApplyAnimation(velocity.normalized);
         }
 
+        bool actionPressed = Input.GetButtonDown("p" + m_playerID + "Action");
+        GameObject interactable;
+
+        InteractableScript iscript;
+
         if (m_interactables.Count > 0)
         {
-            GameObject interactable = m_interactables[0];
+            interactable = m_interactables[0];
+            iscript = interactable.GetComponent<InteractableScript>();
             Vector3 intPos = interactable.transform.position;
             intPos.y += m_interactionIndicatorYOffset;
             m_interactionIndicator.transform.position = intPos;
-            if(!m_interactionIndicator.activeSelf)
+            if (iscript)
             {
-                m_interactionIndicator.SetActive(true);
+                if (iscript.IsInteractable())
+                {
+                    if (!m_interactionIndicator.activeSelf)
+                    {
+                        m_interactionIndicator.SetActive(true);
+                    }
+                    if (actionPressed)
+                    {
+                        iscript.Interact();
+                    }
+                }
+                if (!iscript.IsInteractable())
+                {
+                    m_interactables.Remove(iscript.gameObject);
+                }
             }
         }
         else
@@ -193,22 +225,9 @@ public class Player : MonoBehaviour
             {
                 m_interactionIndicator.SetActive(false);
             }
-        }
-
-            if (Input.GetButton("p" + m_playerID + "Action"))
-        {
-            if (m_interactables.Count == 0)
+            if(actionPressed)
             {
                 m_curState = STATE.WAVING;
-            }
-            else
-            {
-                GameObject interactable = m_interactables[0];
-                InteractableScript iscript = interactable.GetComponent<InteractableScript>();
-                if(iscript)
-                {
-                    iscript.Interact();
-                }
             }
         }
 
@@ -270,14 +289,12 @@ public class Player : MonoBehaviour
             m_animator.SetFloat("SPEED", m_animationSpeed);
             m_animator.SetTrigger("WAVE");
             m_curMoveState = ANIM_STATE.WAVING;
-            m_waveTimer.Restart();
         }
-
     }
 
     void WavingUpdate()
     {
-        if(m_waveTimer.Elapsed() >= m_minWaveDuration && !Input.GetButton("p" + m_playerID + "Action"))
+        if(Input.GetButtonUp("p" + m_playerID + "Action"))
         {
             m_curState = STATE.DEFAULT;
         }
@@ -331,7 +348,7 @@ public class Player : MonoBehaviour
             {
                 m_curState = STATE.DEAD;
                 FlameIRLPlayer();
-                sprRend.color = new Color(0, 0, 0, 0);
+                m_sprRend.color = new Color(0, 0, 0, 0);
             }
             m_invulTimer = 0.0f;
         }
