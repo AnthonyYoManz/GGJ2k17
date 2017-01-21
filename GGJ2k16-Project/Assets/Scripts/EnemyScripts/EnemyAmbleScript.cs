@@ -56,6 +56,6 @@ public class EnemyAmbleScript : MonoBehaviour {
     void OnDrawGizmos()
     {
         Gizmos.color = new Color(0.4f, 0.4f, 1.0f, 0.8f);
-        Gizmos.DrawWireSphere(transform.position, m_ambleRadius);
+        Gizmos.DrawWireSphere(m_spawnPos, m_ambleRadius);
     }
 }
