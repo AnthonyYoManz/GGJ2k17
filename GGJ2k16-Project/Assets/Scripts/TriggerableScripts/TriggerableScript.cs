@@ -36,4 +36,9 @@ public class TriggerableScript : MonoBehaviour {
     {
         //override and do stuff
     }
+
+    public bool Triggered()
+    {
+        return m_triggered;
+    }
 }

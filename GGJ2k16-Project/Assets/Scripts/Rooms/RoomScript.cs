@@ -6,6 +6,7 @@ public class RoomScript : MonoBehaviour
 {
 
     public GameObject m_explosionPrefab;
+    public DoorScript m_exit;
     private List<GameObject> m_roomEnemies;
 
     public BoxCollider2D m_collider { get; private set; }
@@ -14,12 +15,14 @@ public class RoomScript : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
     {
+        Debug.Assert(m_exit);
         m_collider = GetComponent<BoxCollider2D>();
         m_roomEnemies = new List<GameObject>();
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         foreach(GameObject enemy in enemies)
         {
             Vector3 epos = enemy.transform.position;
+            epos.z = transform.position.z;
             if(m_collider.bounds.Contains(epos))
             {
                 m_roomEnemies.Add(enemy);
@@ -34,13 +37,21 @@ public class RoomScript : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-
+        if (m_exit)
+        {
+            if (m_exit.Triggered())
+            {
+                //room complete
+                ExploderiseEnemiesPlease();
+            }
+        }
 	}
 
     public void ExploderiseEnemiesPlease()
     {
         foreach(GameObject enemy in m_roomEnemies)
         {
+            Debug.Log("boom?");
             if (m_explosionPrefab)
             {
                 GameObject explosion = Instantiate(m_explosionPrefab);
@@ -48,5 +59,6 @@ public class RoomScript : MonoBehaviour
             }
             Destroy(enemy);
         }
+        m_roomEnemies.Clear();
     }
 }
