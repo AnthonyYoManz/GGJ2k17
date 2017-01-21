@@ -30,12 +30,15 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D m_rb;
     private List<GameObject> m_interactables;
-    SpriteRenderer sprRend;
+    SpriteRenderer m_sprRend;
 
     private ANIM_STATE m_curMoveState;
 
     public GameObject m_interactionIndicator;
     public float m_interactionIndicatorYOffset = 3.8f;
+
+    public Transform m_otherTransform;
+    public int m_minSortingLayer = 6;
 
 
     public float GetMaxMoveSpeed()
@@ -94,7 +97,7 @@ public class Player : MonoBehaviour
         m_invulTimer = m_onHitInvulDuration;
         m_prevState = STATE.NO_STATE;
         m_curState = STATE.DEFAULT;
-        sprRend = GetComponent<SpriteRenderer>();
+        m_sprRend = GetComponent<SpriteRenderer>();
         m_rb = GetComponent<Rigidbody2D>();
         m_interactables = new List<GameObject>();
 
@@ -108,23 +111,23 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update ()
+    void Update()
     {
         if (m_curState != STATE.DEAD)
         {
             if (m_invulTimer < m_onHitInvulDuration)
             {
                 m_invulTimer += Time.deltaTime;
-                if (sprRend)
+                if (m_sprRend)
                 {
-                    sprRend.color = new Color(1.0f, 1.0f, 1.0f, 0.1f);
+                    m_sprRend.color = new Color(1.0f, 1.0f, 1.0f, 0.1f);
                 }
             }
             else
             {
-                if (sprRend)
+                if (m_sprRend)
                 {
-                    sprRend.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                    m_sprRend.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
                 }
             }
         }
@@ -144,11 +147,22 @@ public class Player : MonoBehaviour
         }
         m_prevState = m_curState;
 
-        
+
         switch (m_curState)
         {
             case STATE.DEFAULT: MovingUpdate(); break;
             case STATE.WAVING: WavingUpdate(); break;
+        }
+
+        Vector3 pos = transform.position;
+        Vector3 oPos = m_otherTransform.position;
+        if (pos.y < oPos.y)
+        {
+            m_sprRend.sortingOrder = m_minSortingLayer + 1;
+        }
+        else
+        {
+            m_sprRend.sortingOrder = m_minSortingLayer;
         }
 	}
 
@@ -334,7 +348,7 @@ public class Player : MonoBehaviour
             {
                 m_curState = STATE.DEAD;
                 FlameIRLPlayer();
-                sprRend.color = new Color(0, 0, 0, 0);
+                m_sprRend.color = new Color(0, 0, 0, 0);
             }
             m_invulTimer = 0.0f;
         }
