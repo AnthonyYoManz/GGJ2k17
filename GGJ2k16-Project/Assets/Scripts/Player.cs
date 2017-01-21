@@ -117,7 +117,11 @@ public class Player : MonoBehaviour
             else
             {
                 GameObject interactable = m_interactables[0];
-                //get interactable component and call interactable script to do a thing aight?
+                InteractableScript iscript = interactable.GetComponent<InteractableScript>();
+                if(iscript)
+                {
+                    iscript.Interact();
+                }
             }
         }
 
