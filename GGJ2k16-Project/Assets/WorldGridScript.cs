@@ -75,7 +75,6 @@ public class WorldGridScript : MonoBehaviour
                 else
                 {
                     rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell);// Maths.ComponentMultiply(idx, m_sizeOfPadding);
-                    Debug.Log(rect.position);
                     rect.size = m_sizeOfCell;
                 }
 

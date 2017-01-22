@@ -43,6 +43,7 @@ public class UIScript : MonoBehaviour
             m_fadeImg.color = colour;
             m_minorTextElement.color = Color.Lerp(m_curTextStart, m_curTextTarget, m_fadeTimer.Elapsed() / m_fadeDuration);
             m_majorTextElement.color = Color.Lerp(m_curTextStart, m_curTextTarget, m_fadeTimer.Elapsed() / m_fadeDuration);
+            Debug.Log(colour);
             if (colour == m_curTarget) { m_fading = false; }
         }
 	}
@@ -73,8 +74,8 @@ public class UIScript : MonoBehaviour
     }
     public void FadeIn()
     {
-        m_curTarget = m_startColour;
         m_curStart = m_endColour;
+        m_curTarget = m_startColour;
 
         m_curTextTarget = m_textStartColour;
         m_curTextStart = m_textEndColour;
