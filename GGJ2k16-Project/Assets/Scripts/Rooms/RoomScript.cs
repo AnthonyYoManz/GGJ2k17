@@ -16,7 +16,7 @@ public class RoomScript : MonoBehaviour
 	// Use this for initialization
 	void Awake ()
     {
-        Debug.Assert(m_exit);
+        Debug.Assert(m_exit, "A room has no exit");
         m_awake = false;
         m_collider = GetComponent<BoxCollider2D>();
         m_roomEnemies = new List<GameObject>();

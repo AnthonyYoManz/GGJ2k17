@@ -27,7 +27,9 @@ public class FreshCameraScrip : MonoBehaviour
 
  
         Rect cell;
-        if (GameManager.s_singleton.m_worldGrid.GetCellRectFromPoint(transform.position, out cell))
+        WorldGridScript wgScript = GameManager.s_singleton.m_worldGrid;
+        Debug.Assert(wgScript, "wg script does not exist");
+        if (wgScript.GetCellRectFromPoint(transform.position, out cell))
         {
             m_inTransition = false;
             m_target = cell.center;

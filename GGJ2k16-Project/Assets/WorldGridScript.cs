@@ -8,7 +8,7 @@ public class WorldGridScript : MonoBehaviour
     /// </summary>
     public Vector2 m_sizeOfCell;
 
-    public Vector2 m_sizeOfpadding;
+    public Vector2 m_sizeOfPadding;
     public Vector2 m_numberOfCells;
     /// <summary>
     /// When determining the position of players, count paddings as part of cells?
@@ -46,7 +46,7 @@ public class WorldGridScript : MonoBehaviour
         }
         else
         {
-            return (m_sizeOfCell.x + m_sizeOfpadding.x) / 2;
+            return (m_sizeOfCell.x + m_sizeOfPadding.x) / 2;
         }
     }
 
@@ -69,12 +69,13 @@ public class WorldGridScript : MonoBehaviour
                 idx.y = j;
                 if (m_paddingIsGridSpace)
                 {
-                    rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) - m_sizeOfpadding / 2;
-                    rect.size = m_sizeOfCell + Maths.ComponentMultiply(idx, m_sizeOfpadding);
+                    rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) - m_sizeOfPadding / 2;
+                    rect.size = m_sizeOfCell + Maths.ComponentMultiply(idx, m_sizeOfPadding);
                 }
                 else
                 {
-                    rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell);
+                    rect.center = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) + (m_sizeOfCell / 2) + Maths.ComponentMultiply(idx, m_sizeOfPadding);
+                    Debug.Log(m_sizeOfPadding + ", " + rect.center);
                     rect.size = m_sizeOfCell;
                 }
 
@@ -98,7 +99,7 @@ public class WorldGridScript : MonoBehaviour
             {
                 idx.x = i;
                 idx.y = j;
-                Vector2 cellPos = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) + (m_sizeOfCell/2)  + Maths.ComponentMultiply(idx, m_sizeOfpadding);
+                Vector2 cellPos = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) + (m_sizeOfCell/2)  + Maths.ComponentMultiply(idx, m_sizeOfPadding);
                 Gizmos.DrawWireCube(cellPos, m_sizeOfCell);
             }
         }

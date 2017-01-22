@@ -23,7 +23,6 @@ public class LeverScript : InteractableScript {
 
     protected override void BeginInteract()
     {
-        Debug.Log("WTF");
         if(!m_interacted && m_triggerable)
         {
             m_triggerable.Trigger();
