@@ -22,11 +22,14 @@ public class GameOverSwapScript : MonoBehaviour {
             if(m_goTimer >= m_timeBeforeGameOver)
             {
                 //do gameover party
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-                m_triggered = false;
+
+                GameManager.s_singleton.Lose();
+
+               // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+               m_triggered = false;
             }
         }
-        foreach (Player player in m_players)
+        foreach (Player player in GameManager.s_singleton.GetPlayers())
         {
             if(player.IsDead() )
             {

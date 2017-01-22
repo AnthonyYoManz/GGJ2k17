@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     private Vector2[]           m_playerPositions;
 
     private UIScript m_UI;
+    public bool m_gameOverState = false;
     public Player[] GetPlayers()
     {
         return m_players;
@@ -38,37 +39,46 @@ public class GameManager : MonoBehaviour
     void Start()
     {
 
-        m_UI.FadeOut();
+        //m_UI.FadeOut();
         //change room changing to go through this script 
+        AllowPlayerInput(true);
     }
 
     // Update is called once per frame
     void Update ()
     {
-        foreach (Player p in m_players)
-        {
-            //if (p.m_curState == Player.STATE.DEAD)
-            {
-                //if input == restart
-                if (false)
-                {
-                    RestartLevel();
-                }
-            }
-        }
+        //////foreach (Player p in m_players)
+        //////{
+        //////    //if (p.m_curState == Player.STATE.DEAD)
+        //////    {
+        //////        //if input == restart
+        //////        if (false)
+        //////        {
+        //////            RestartLevel();
+        //////        }
+        //////    }
+        //////}
 
+        if (m_gameOverState && Input.anyKeyDown)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
 	}
 
     public void Lose()
     {
+        AllowPlayerInput(false);
         m_UI.SetWinState(false);
         m_UI.FadeIn();
+        m_gameOverState = true;
     }
 
     public void Win()
     {
+        AllowPlayerInput(false);
         m_UI.SetWinState(true);
         m_UI.FadeIn();
+        m_gameOverState = true;
     }
 
     public void QuitGame()
