@@ -27,6 +27,11 @@ public class AggroScript : MonoBehaviour {
         }
 	}
 	
+    void OnEnable()
+    {
+        m_aggroed = false;
+    }
+
 	// Update is called once per frame
 	void Update ()
     {

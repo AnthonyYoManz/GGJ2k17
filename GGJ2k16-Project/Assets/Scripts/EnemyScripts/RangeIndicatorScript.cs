@@ -14,7 +14,8 @@ public class RangeIndicatorScript : MonoBehaviour {
     public AggroScript m_aggro;
 
     // Use this for initialization
-    void Start () {
+    void Awake () {
+        m_startAlpha = m_alpha;
         m_fading = false;
         m_range = 5.0f;
         if(m_aggro)
@@ -26,6 +27,14 @@ public class RangeIndicatorScript : MonoBehaviour {
         transform.localScale = new Vector3(m_scale, m_scale, m_scale);
 	}
 	
+    void OnEnable()
+    {
+        Debug.Log("enabled");
+        m_fading = false;
+        m_alpha = m_startAlpha;
+        m_fadeProgress = 0.0f;
+    }
+
 	// Update is called once per frame
 	void Update () {
         if(m_aggro.IsAggroed())

@@ -28,6 +28,12 @@ public class EnemyVelocityChaseScript : MonoBehaviour {
         m_animator.SetTrigger("IDLE");
     }
 
+    void OnEnable()
+    {
+        m_velocity = new Vector2(0, 0);
+        m_direction = new Vector2(0, 0);
+    }
+
     // Update is called once per frame
     void Update()
     {

@@ -74,6 +74,30 @@ public class FreshCameraScrip : MonoBehaviour
                         m_inTransition = true;
                         m_start = transform.position;
                         m_transitionTimer.Restart();
+                        foreach(Player q in GameManager.s_singleton.GetPlayers())
+                        {
+                            if(q != p && !cell.Contains(q.transform.position))
+                            {
+                                //dir uses numpad directions, so 2 for down, 6 for right, etc
+                                int dir = 2;
+                                if(m_target.x - m_start.x > 0)
+                                {
+                                    dir = 6;
+                                }
+                                if (m_target.x - m_start.x < 0)
+                                {
+                                    dir = 4;
+                                }
+                                if (m_target.y - m_start.y > 0)
+                                {
+                                    dir = 8;
+                                }
+                                q.Poof();
+                                q.transform.position = p.GetPointToSide(dir);
+                                q.Poof();
+                            }
+                        }
+                        break;
                     }
                 }
             }
