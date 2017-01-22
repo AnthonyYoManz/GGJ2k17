@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
         if (m_gameOverState) return;
         AllowPlayerInput(false);
         m_UI.SetWinState(false);
-        m_UI.FadeIn();
+        m_UI.FadeIn(true);
         m_gameOverState = true;
     }
 
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
         if (m_gameOverState) return;
         AllowPlayerInput(false);
         m_UI.SetWinState(true);
-        m_UI.FadeIn();
+        m_UI.FadeIn(false);
         m_gameOverState = true;
     }
 
