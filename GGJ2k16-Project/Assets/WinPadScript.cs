@@ -1,27 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WinPadScript : MonoBehaviour
+public class WinPadScript : InteractableScript
 {
+    public float m_scaleDuratoin;
 
+    bool m_interacted;
+    private Timer m_scaleTimer;
+    Animator m_anim;
+
+    //private Vector3 startScale
     // Use this for initialization
-    void Start ()
+    void Awake()
     {
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	
-	}
+        m_scaleTimer = new Timer();
+        m_anim = GetComponent<Animator>();
+    }
 
-    void OnTriggerEnter2D(Collider2D collider)
+    // Update is called once per frame
+    void Update()
     {
-        if (collider.gameObject.tag == "Player")
-        {
-            GameManager.s_singleton.Win();
-        }
+     
+    }
+
+
+    protected override void BeginInteract()
+    {
+        m_interacted = true;
+        GameManager.s_singleton.Win();
+        m_anim.SetTrigger("COLLECTED");
+        //m_scaleTimer.Restart();
     }
 
 }
