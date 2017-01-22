@@ -74,8 +74,10 @@ public class WorldGridScript : MonoBehaviour
                 }
                 else
                 {
-                    rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell);
-                    rect.size = m_sizeOfCell;
+                    //rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell);
+                    //rect.size = m_sizeOfCell;
+                    rect.center = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) + (m_sizeOfCell / 2) + Maths.ComponentMultiply(idx, m_sizeOfpadding);
+                    rect.size = m_sizeOfCell + m_sizeOfpadding;
                 }
 
                 if (rect.Contains(point))
