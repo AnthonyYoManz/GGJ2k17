@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour
         //////    }
         //////}
 
-        if (m_gameOverState && Input.GetButtonDown("p1Action") || Input.GetButtonDown("p2Action"))
+        if (m_gameOverState && (Input.GetButtonDown("p1Action") || Input.GetButtonDown("p2Action")))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
