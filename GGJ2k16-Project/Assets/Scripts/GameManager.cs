@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
         s_singleton = this;
         //DontDestroyOnLoad(this.gameObject);
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        Debug.Log(players.Length + " players found.");
         m_players = new Player[players.Length];
         for (int i = 0; i < players.Length; ++i) m_players[i] = players[i].GetComponent<Player>();
 

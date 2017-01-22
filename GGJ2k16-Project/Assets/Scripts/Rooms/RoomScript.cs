@@ -8,6 +8,7 @@ public class RoomScript : MonoBehaviour
     public GameObject m_explosionPrefab;
     public DoorScript m_exit;
     private List<GameObject> m_roomEnemies;
+    private bool m_awake;
 
     public BoxCollider2D m_collider { get; private set; }
 
@@ -16,6 +17,7 @@ public class RoomScript : MonoBehaviour
 	void Awake ()
     {
         Debug.Assert(m_exit);
+        m_awake = false;
         m_collider = GetComponent<BoxCollider2D>();
         m_roomEnemies = new List<GameObject>();
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
@@ -89,5 +91,38 @@ public class RoomScript : MonoBehaviour
             Destroy(enemy);
         }
         m_roomEnemies.Clear();
+    }
+
+    public void SleepBaddies()
+    {
+        foreach (GameObject enemy in m_roomEnemies)
+        {
+            enemy.SetActive(false);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D _col)
+    {
+        if (_col.tag == "Player")
+        {
+            if (!m_awake)
+            {
+                m_awake = true;
+                PlayersAreReady();
+
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D _col)
+    {
+        if(_col.tag == "Player")
+        {
+            if(m_awake)
+            {
+                m_awake = false;
+                SleepBaddies();
+            }
+        }
     }
 }

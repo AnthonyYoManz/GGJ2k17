@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
     SpriteRenderer m_sprRend;
 
     private ANIM_STATE m_curMoveState;
+    private ANIM_STATE m_prevMoveState;
 
     public GameObject m_interactionIndicator;
     public float m_interactionIndicatorYOffset = 3.8f;
@@ -48,6 +49,8 @@ public class Player : MonoBehaviour
     private Timer m_waveTimer;
     [SerializeField]
     private float m_minWaveDuration;
+
+    public GameObject m_poofPrefab;
 
     public float GetMaxMoveSpeed()
     {
@@ -78,7 +81,7 @@ public class Player : MonoBehaviour
                 case ANIM_STATE.RIGHT: m_animator.SetTrigger("MOVE_RIGHT"); break;
                 case ANIM_STATE.WAVING: m_animator.SetTrigger("WAVE"); break;
             }
-
+            m_prevMoveState = m_curMoveState;
             m_curMoveState = state;
         }
     }
@@ -387,5 +390,31 @@ public class Player : MonoBehaviour
     public bool IsDead()
     {
         return (m_curState == STATE.DEAD);
+    }
+
+    public Vector3 GetPointToSide(int dir)
+    {
+
+        Vector3 offset = new Vector3(0, 0);
+        //dir uses numpad directions (2 for down, 8 for up, etc)
+        switch(dir)
+        {
+            case 6: offset.y = -1; break;
+            case 2: offset.x = -1; break;
+            case 8: offset.x = 1; break;
+            case 4: offset.y = 1; break;
+            default: break;
+        }
+        return transform.position + offset;
+    }
+
+    public void Poof()
+    {
+        //perform poof
+        if(m_poofPrefab)
+        {
+            GameObject poof = Instantiate(m_poofPrefab);
+            poof.transform.position = transform.position;
+        }
     }
 }

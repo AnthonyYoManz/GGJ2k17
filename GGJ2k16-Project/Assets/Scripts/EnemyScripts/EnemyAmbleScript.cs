@@ -19,6 +19,11 @@ public class EnemyAmbleScript : MonoBehaviour {
         GetRandomTargetPos();
 	}
 	
+    void OnEnable()
+    {
+        transform.position = m_spawnPos;
+    }
+
 	// Update is called once per frame
 	void Update ()
     {
