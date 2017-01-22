@@ -12,7 +12,7 @@ public class EnemyAmbleScript : MonoBehaviour {
     private AggroScript m_aggroScript;
 
 	// Use this for initialization
-	void Start ()
+	void Awake ()
     {
         m_aggroScript = GetComponent<AggroScript>();
         m_spawnPos = transform.position;

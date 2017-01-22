@@ -12,8 +12,8 @@ public class DoorScript : TriggerableScript
     private bool m_closing;
 	// Use this for initialization
 	void Start () {
-	    
-	}
+        m_timeSinceTrigger = 0.0f;
+    }
 
     /// <summary>
     /// 

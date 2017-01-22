@@ -399,10 +399,10 @@ public class Player : MonoBehaviour
         //dir uses numpad directions (2 for down, 8 for up, etc)
         switch(dir)
         {
-            case 6: offset.y = -1; break;
-            case 2: offset.x = -1; break;
-            case 8: offset.x = 1; break;
-            case 4: offset.y = 1; break;
+            case 6: offset.x = -1; break;
+            case 2: offset.y = 1; break;
+            case 8: offset.y = -1; break;
+            case 4: offset.x = 1; break;
             default: break;
         }
         return transform.position + offset;
