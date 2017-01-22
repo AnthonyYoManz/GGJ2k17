@@ -8,8 +8,13 @@ public class WorldGridScript : MonoBehaviour
     /// </summary>
     public Vector2 m_sizeOfCell;
 
-
+    public Vector2 m_sizeOfpadding;
     public Vector2 m_numberOfCells;
+    /// <summary>
+    /// When determining the position of players, count paddings as part of cells?
+    /// </summary>
+    public bool m_paddingIsGridSpace;
+    public bool m_usePaddingForCameraSize;
 
     //used for debugging, collision /w points.
     //private Rect[,] m_cells;
@@ -31,7 +36,20 @@ public class WorldGridScript : MonoBehaviour
     {
 	
 	}
-	
+
+    public float ClalculateOrthoCamSize()
+    {
+        if (m_usePaddingForCameraSize)
+        {
+            return m_sizeOfCell.x / 2;
+
+        }
+        else
+        {
+            return (m_sizeOfCell.x + m_sizeOfpadding.x) / 2;
+        }
+    }
+
 	// Update is called once per frame
 	void Update ()
     {
@@ -42,12 +60,24 @@ public class WorldGridScript : MonoBehaviour
     {
         rect = new Rect();
         Vector2 gridPos = transform.position;
+        Vector2 idx = new Vector2();
         for (int i = 0; i < m_numberOfCells.x; ++i)
         {
             for (int j = 0; j < m_numberOfCells.y; ++j)
             {
-                rect.position = gridPos + Maths.ComponentMultiply(new Vector2(i, j), m_sizeOfCell);
-                rect.size = m_sizeOfCell;
+                idx.x = i;
+                idx.y = j;
+                if (m_paddingIsGridSpace)
+                {
+                    rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) - m_sizeOfpadding / 2;
+                    rect.size = m_sizeOfCell + Maths.ComponentMultiply(idx, m_sizeOfpadding);
+                }
+                else
+                {
+                    rect.position = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell);
+                    rect.size = m_sizeOfCell;
+                }
+
                 if (rect.Contains(point))
                 {
                     return true;
@@ -61,11 +91,14 @@ public class WorldGridScript : MonoBehaviour
     {
         Gizmos.color = Color.grey;
         Vector2 gridPos = transform.position;
+        Vector2 idx = new Vector2();
         for (int i = 0; i < m_numberOfCells.x; ++i)
         {
             for (int j = 0; j < m_numberOfCells.y; ++j)
             {
-                Vector2 cellPos = gridPos + Maths.ComponentMultiply(new Vector2(i, j), m_sizeOfCell) + (m_sizeOfCell/2);
+                idx.x = i;
+                idx.y = j;
+                Vector2 cellPos = gridPos + Maths.ComponentMultiply(idx, m_sizeOfCell) + (m_sizeOfCell/2)  + Maths.ComponentMultiply(idx, m_sizeOfpadding);
                 Gizmos.DrawWireCube(cellPos, m_sizeOfCell);
             }
         }

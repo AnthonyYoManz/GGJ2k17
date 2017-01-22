@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager   s_singleton;
-    
+    public WorldGridScript      m_worldGrid { get; private set; }
+
     private Player[]            m_players;
     private CameraScript        m_cameraScript;
     private Vector2[]           m_playerPositions;
@@ -27,7 +28,8 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < players.Length; ++i) m_players[i] = players[i].GetComponent<Player>();
 
         m_cameraScript = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>();
-
+        m_worldGrid = GameObject.Find("GameWorldGrid").GetComponent<WorldGridScript>();
+        Debug.Assert(m_worldGrid, "Uh oh can't find a world grid script. name the bject GameWorldGrid for me.");
     }
 
     void Start()

@@ -302,7 +302,7 @@ public class Player : MonoBehaviour
             m_animator.SetTrigger("WAVE");
             m_curMoveState = ANIM_STATE.WAVING;
             m_waveTimer.Restart();
-
+            
             if (m_waveSound && m_audioSource) m_audioSource.PlayOneShot(m_waveSound);
         }
     }
