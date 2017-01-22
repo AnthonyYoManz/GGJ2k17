@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     private CameraScript        m_cameraScript;
     private Vector2[]           m_playerPositions;
 
-
+    private UIScript m_UI;
     public Player[] GetPlayers()
     {
         return m_players;
@@ -30,11 +30,15 @@ public class GameManager : MonoBehaviour
         m_cameraScript = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraScript>();
         m_worldGrid = GameObject.Find("GameWorldGrid").GetComponent<WorldGridScript>();
         Debug.Assert(m_worldGrid, "Uh oh can't find a world grid script. name the bject GameWorldGrid for me.");
+
+        m_UI = GetComponentInChildren<UIScript>();
+        Debug.Assert(m_UI, "Make sure you're using game manager prefab");
     }
 
     void Start()
     {
-       
+
+        m_UI.FadeOut();
         //change room changing to go through this script 
     }
 
@@ -55,9 +59,16 @@ public class GameManager : MonoBehaviour
 
 	}
 
+    public void Lose()
+    {
+        m_UI.SetWinState(false);
+        m_UI.FadeIn();
+    }
+
     public void Win()
     {
-        Debug.Log("winnnnnnnnnnerrrs");
+        m_UI.SetWinState(true);
+        m_UI.FadeIn();
     }
 
     public void QuitGame()
