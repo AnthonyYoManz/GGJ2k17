@@ -29,7 +29,6 @@ public class RangeIndicatorScript : MonoBehaviour {
 	
     void OnEnable()
     {
-        Debug.Log("enabled");
         m_fading = false;
         m_alpha = m_startAlpha;
         m_fadeProgress = 0.0f;
