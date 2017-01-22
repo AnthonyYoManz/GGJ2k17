@@ -28,7 +28,7 @@ public class WinPadScript : InteractableScript
     {
         m_interacted = true;
         GameManager.s_singleton.Win();
-        m_anim.SetTrigger("dw");
+        m_anim.SetTrigger("COLLECTED");
         //m_scaleTimer.Restart();
     }
 

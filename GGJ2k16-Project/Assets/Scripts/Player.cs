@@ -116,7 +116,7 @@ public class Player : MonoBehaviour
         if (m_animator)
         {
 
-            m_animator.SetFloat("SPEED", 0.0f);
+            m_animator.SetFloat("SPEED", m_animationSpeed);
             m_curMoveState = ANIM_STATE.IDLE;
             m_animator.SetTrigger("IDLE");//Unless there is also an idle anim..
         }
@@ -286,8 +286,8 @@ public class Player : MonoBehaviour
         else if (m_curMoveState != ANIM_STATE.IDLE)//if not moving
         {
             m_curMoveState = ANIM_STATE.IDLE;
-            //m_animator.SetTrigger("IDLE");
-            m_animator.SetFloat("SPEED", 0.0f);
+            m_animator.SetTrigger("IDLE");
+      
         }
 
     }

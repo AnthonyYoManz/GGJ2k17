@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
 
     public void Lose()
     {
+        if (m_gameOverState) return;
         AllowPlayerInput(false);
         m_UI.SetWinState(false);
         m_UI.FadeIn();
@@ -76,6 +77,7 @@ public class GameManager : MonoBehaviour
 
     public void Win()
     {
+        if (m_gameOverState) return;
         AllowPlayerInput(false);
         m_UI.SetWinState(true);
         m_UI.FadeIn();

@@ -37,7 +37,8 @@ public class UIScript : MonoBehaviour
 	void Update ()
     {
         if (m_fading)
-        { 
+        {
+           
             Color colour = Color.Lerp(m_curStart, m_curTarget, m_fadeTimer.Elapsed() / m_fadeDuration);
             m_fadeImg.color = colour;
             m_minorTextElement.color = Color.Lerp(m_curTextStart, m_curTextTarget, m_fadeTimer.Elapsed() / m_fadeDuration);
@@ -46,17 +47,7 @@ public class UIScript : MonoBehaviour
         }
 	}
 
-    void ShowGameOver(bool win)
-    {
-        if (win)
-        {
-            m_majorTextElement.text = m_winText;
-        }
-        else
-        {
-            m_majorTextElement.text = m_loseText;
-        }
-    }
+
 
     public void FadeOut()
     {
